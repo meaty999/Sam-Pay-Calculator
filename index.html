@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Pay & Hours Tracker</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --accent: #3182ce;
+            --accent-hover: #2b6cb0;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --success-hover: #2f855a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1a202c;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            font-size: 1.1rem; 
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 5px;
+            color: #4a5568;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .day-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .day-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .day-header {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 10px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-send {
+            background-color: var(--success);
+            margin-top: 10px;
+        }
+
+        .btn-send:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #718096;
+            border: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f7fafc;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .results-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .highlight-row {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hours & Pay Tracker</h1>
+
+    <!-- Setup Card -->
+    <div class="card">
+        <h2>1. Pay Rates Setup</h2>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="hourlyRate">Standard Rate (£)</label>
+                <input type="number" id="hourlyRate" step="0.01" placeholder="12.50" oninput="calculatePay()">
+            </div>
+            <div class="form-group">
+                <label for="otRate">Overtime Rate (£)</label>
+                <input type="number" id="otRate" step="0.01" placeholder="18.75" oninput="calculatePay()">
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Log Card -->
+    <div class="card">
+        <h2>2. Daily Hours Log</h2>
+        <div class="day-header">
+            <div>Day</div>
+            <div>Standard</div>
+            <div>Overtime</div>
+        </div>
+        
+        <div id="daysContainer">
+            <!-- JavaScript will populate days here dynamically -->
+        </div>
+
+        <button class="btn btn-send" onclick="sendReport()">Send Weekly Report</button>
+        <button class="btn btn-secondary" onclick="clearHoursOnly()">Clear Hours Only</button>
+    </div>
+
+    <!-- Live Breakdown Card -->
+    <div class="card">
+        <h2>Estimated Weekly Breakdown</h2>
+        <table class="results-table">
+            <tr>
+                <td>Total Standard Hours</td>
+                <td id="totalStdHours" class="text-right">0.00 hrs</td>
+            </tr>
+            <tr>
+                <td>Total Overtime Hours</td>
+                <td id="totalOtHours" class="text-right">0.00 hrs</td>
+            </tr>
+            <tr>
+                <td>Standard Pay</td>
+                <td id="standardPay" class="text-right">£0.00</td>
+            </tr>
+            <tr>
+                <td>Overtime Pay</td>
+                <td id="otPayTotal" class="text-right">£0.00</td>
+            </tr>
+            <tr style="font-weight: 600;">
+                <td>Total Gross Pay</td>
+                <td id="grossPay" class="text-right">£0.00</td>
+            </tr>
+            <tr>
+                <td>Income Tax (PAYE Estimate)</td>
+                <td id="incomeTax" class="text-right" style="color: #e53e3e;">-£0.00</td>
+            </tr>
+            <tr>
+                <td>National Insurance</td>
+                <td id="nationalInsurance" class="text-right" style="color: #e53e3e;">-£0.00</td>
+            </tr>
+            <tr class="highlight-row">
+                <td>Estimated Take-Home Pay</td>
+                <td id="netPay" class="text-right">£0.00</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    // Render the daily input fields instantly on load
+    const container = document.getElementById('daysContainer');
+    days.forEach(day => {
+        const dayRow = document.createElement('div');
+        dayRow.className = 'day-row';
+        dayRow.innerHTML = `
+            <div class="day-label">${day}</div>
+            <input type="number" id="std-${day}" step="0.25" placeholder="0" value="0" oninput="calculatePay()">
+            <input type="number" id="ot-${day}" step="0.25" placeholder="0" value="0" oninput="calculatePay()">
+        `;
+        container.appendChild(dayRow);
+    });
+
+    window.onload = function() {
+        // Restore setup rates
+        if(localStorage.getItem('hourlyRate')) document.getElementById('hourlyRate').value = localStorage.getItem('hourlyRate');
+        if(localStorage.getItem('otRate')) document.getElementById('otRate').value = localStorage.getItem('otRate');
+        
+        // Restore logged daily hours
+        days.forEach(day => {
+            if(localStorage.getItem(`std-${day}`)) document.getElementById(`std-${day}`).value = localStorage.getItem(`std-${day}`);
+            if(localStorage.getItem(`ot-${day}`)) document.getElementById(`ot-${day}`).value = localStorage.getItem(`ot-${day}`);
+        });
+
+        calculatePay();
+    }
+
+    function calculatePay() {
+        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+        const otRate = parseFloat(document.getElementById('otRate').value) || 0;
+
+        localStorage.setItem('hourlyRate', hourlyRate);
+        localStorage.setItem('otRate', otRate);
+
+        let totalStdHours = 0;
+        let totalOtHours = 0;
+
+        days.forEach(day => {
+            const stdHrs = parseFloat(document.getElementById(`std-${day}`).value) || 0;
+            const otHrs = parseFloat(document.getElementById(`ot-${day}`).value) || 0;
+            
+            totalStdHours += stdHrs;
+            totalOtHours += otHrs;
+
+            localStorage.setItem(`std-${day}`, stdHrs);
+            localStorage.setItem(`ot-${day}`, otHrs);
+        });
+
+        const standardPay = hourlyRate * totalStdHours;
+        const otPayTotal = otRate * totalOtHours;
+        const grossPay = standardPay + otPayTotal;
+
+        // --- UK Tax Pro-Rata Rules ---
+        const weeklyTaxThreshold = 12570 / 52; 
+        let incomeTax = 0;
+        if (grossPay > weeklyTaxThreshold) {
+            incomeTax = (grossPay - weeklyTaxThreshold) * 0.20;
+        }
+
+        const weeklyNIThreshold = 242;
+        let nationalInsurance = 0;
+        if (grossPay > weeklyNIThreshold) {
+            nationalInsurance = (grossPay - weeklyNIThreshold) * 0.08;
+        }
+
+        const netPay = grossPay - incomeTax - nationalInsurance;
+
+        // Update UI View
+        document.getElementById('totalStdHours').innerText = totalStdHours.toFixed(2) + ' hrs';
+        document.getElementById('totalOtHours').innerText = totalOtHours.toFixed(2) + ' hrs';
+        document.getElementById('standardPay').innerText = '£' + standardPay.toFixed(2);
+        document.getElementById('otPayTotal').innerText = '£' + otPayTotal.toFixed(2);
+        document.getElementById('grossPay').innerText = '£' + grossPay.toFixed(2);
+        document.getElementById('incomeTax').innerText = '-£' + incomeTax.toFixed(2);
+        document.getElementById('nationalInsurance').innerText = '-£' + nationalInsurance.toFixed(2);
+        document.getElementById('netPay').innerText = '£' + netPay.toFixed(2);
+    }
+
+    function sendReport() {
+        let message = `Weekly Hours Summary:\n\n`;
+        let totalStd = 0;
+        let totalOt = 0;
+
+        days.forEach(day => {
+            const std = parseFloat(document.getElementById(`std-${day}`).value) || 0;
+            const ot = parseFloat(document.getElementById(`ot-${day}`).value) || 0;
+            if (std > 0 || ot > 0) {
+                message += `${day}: Std: ${std}h | OT: ${ot}h\n`;
+                totalStd += std;
+                totalOt += ot;
+            }
+        });
+
+        message += `\nTotal Standard Hours: ${totalStd.toFixed(2)}`;
+        message += `\nTotal Overtime Hours: ${totalOt.toFixed(2)}`;
+        message += `\nEst. Gross Pay: £${document.getElementById('grossPay').innerText.replace('£', '')}`;
+        message += `\nEst. Take-Home: ${document.getElementById('netPay').innerText}`;
+
+        // Uses a standard system text message link protocol (sms:)
+        // It triggers the native iOS or Android messaging application with pre-composed text.
+        window.location.href = "sms:?&body=" + encodeURIComponent(message);
+    }
+
+    function clearHoursOnly() {
+        days.forEach(day => {
+            localStorage.removeItem(`std-${day}`);
+            localStorage.removeItem(`ot-${day}`);
+            document.getElementById(`std-${day}`).value = '0';
+            document.getElementById(`ot-${day}`).value = '0';
+        });
+        calculatePay();
+    }
+</script>
+
+</body>
+</html>
