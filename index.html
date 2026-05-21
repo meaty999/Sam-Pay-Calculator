@@ -286,10 +286,10 @@
         let endDec = endH + (endM / 60);
         
         if (endDec < startDec) {
-            endDec += 24; // Handle shift over midnight
+            endDec += 24; 
         }
         
-        return Math.max(0, endDec - startDec); // No lunch deduction
+        return Math.max(0, endDec - startDec);
     }
 
     function calculatePay() {
@@ -356,13 +356,17 @@
         let message = `Weekly Hours Summary:\n\n`;
         let grandStd = 0;
         let grandOt = 0;
-        const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
+        
+        // Explicitly grab fresh page element value 
+        const rawMaxField = document.getElementById('maxStdHours').value;
+        const maxStdHours = parseFloat(rawMaxField) || 9;
 
         days.forEach(day => {
             const start = document.getElementById(`start-${day}`).value;
             const end = document.getElementById(`end-${day}`).value;
             
-            if (start && end) {
+            // Check explicitly if values exist
+            if (start && end && start !== "" && end !== "") {
                 const totalHours = getDuration(start, end);
                 let std = 0;
                 let ot = 0;
@@ -374,6 +378,7 @@
                     ot = totalHours - maxStdHours;
                 }
 
+                // Append text for this day specifically
                 message += `${day}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
                 if(ot > 0) {
                     message += ` | OT: ${ot.toFixed(2)}h`;
@@ -389,8 +394,12 @@
         if (grandOt > 0) {
             message += `\nTotal Overtime Hours: ${grandOt.toFixed(2)}`;
         }
-        message += `\nEst. Gross Pay: £${document.getElementById('grossPay').innerText.replace('£', '')}`;
-        message += `\nEst. Take-Home: ${document.getElementById('netPay').innerText}`;
+        
+        const grossLabel = document.getElementById('grossPay').innerText.replace('£', '');
+        const netLabel = document.getElementById('netPay').innerText;
+        
+        message += `\nEst. Gross Pay: £${grossLabel}`;
+        message += `\nEst. Take-Home: ${netLabel}`;
 
         window.location.href = "sms:?&body=" + encodeURIComponent(message);
     }
