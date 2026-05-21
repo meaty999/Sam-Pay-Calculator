@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Pay & Hours Tracker</title>
+    <title>Weekly Shift & Pay Tracker</title>
     <style>
         :root {
             --bg-color: #f4f6f9;
@@ -27,7 +27,7 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
         }
 
@@ -67,7 +67,7 @@
             font-size: 0.85rem;
         }
 
-        input[type="number"] {
+        input[type="number"], input[type="time"] {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border);
@@ -76,18 +76,18 @@
             font-size: 1rem;
         }
 
-        .grid-2 {
+        .grid-3 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 12px;
         }
 
         .day-row {
             display: grid;
-            grid-template-columns: 100px 1fr 1fr;
+            grid-template-columns: 95px 1fr 1fr;
             gap: 10px;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .day-label {
@@ -97,7 +97,7 @@
 
         .day-header {
             display: grid;
-            grid-template-columns: 100px 1fr 1fr;
+            grid-template-columns: 95px 1fr 1fr;
             gap: 10px;
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -174,41 +174,41 @@
 <body>
 
 <div class="container">
-    <h1>Hours & Pay Tracker</h1>
+    <h1>Sam's Shift & Pay Tracker</h1>
 
-    <!-- Setup Card -->
     <div class="card">
-        <h2>1. Pay Rates Setup</h2>
-        <div class="grid-2">
+        <h2>1. Pay Rules Setup</h2>
+        <div class="grid-3">
             <div class="form-group">
-                <label for="hourlyRate">Standard Rate (£)</label>
+                <label for="hourlyRate">Std Rate (£)</label>
                 <input type="number" id="hourlyRate" step="0.01" placeholder="12.50" oninput="calculatePay()">
             </div>
             <div class="form-group">
-                <label for="otRate">Overtime Rate (£)</label>
+                <label for="otRate">OT Rate (£)</label>
                 <input type="number" id="otRate" step="0.01" placeholder="18.75" oninput="calculatePay()">
+            </div>
+            <div class="form-group">
+                <label for="maxStdHours">OT Kicks In After</label>
+                <input type="number" id="maxStdHours" step="0.5" value="9" oninput="calculatePay()">
             </div>
         </div>
     </div>
 
-    <!-- Daily Log Card -->
     <div class="card">
-        <h2>2. Daily Hours Log</h2>
+        <h2>2. Enter Times Worked</h2>
         <div class="day-header">
             <div>Day</div>
-            <div>Standard</div>
-            <div>Overtime</div>
+            <div>Start Time</div>
+            <div>Finish Time</div>
         </div>
         
         <div id="daysContainer">
-            <!-- JavaScript will populate days here dynamically -->
-        </div>
+            </div>
 
         <button class="btn btn-send" onclick="sendReport()">Send Weekly Report</button>
-        <button class="btn btn-secondary" onclick="clearHoursOnly()">Clear Hours Only</button>
+        <button class="btn btn-secondary" onclick="clearHoursOnly()">Clear This Week's Times</button>
     </div>
 
-    <!-- Live Breakdown Card -->
     <div class="card">
         <h2>Estimated Weekly Breakdown</h2>
         <table class="results-table">
@@ -251,59 +251,83 @@
 <script>
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    // Render the daily input fields instantly on load
     const container = document.getElementById('daysContainer');
     days.forEach(day => {
         const dayRow = document.createElement('div');
         dayRow.className = 'day-row';
         dayRow.innerHTML = `
             <div class="day-label">${day}</div>
-            <input type="number" id="std-${day}" step="0.25" placeholder="0" value="0" oninput="calculatePay()">
-            <input type="number" id="ot-${day}" step="0.25" placeholder="0" value="0" oninput="calculatePay()">
+            <input type="time" id="start-${day}" oninput="calculatePay()">
+            <input type="time" id="end-${day}" oninput="calculatePay()">
         `;
         container.appendChild(dayRow);
     });
 
     window.onload = function() {
-        // Restore setup rates
         if(localStorage.getItem('hourlyRate')) document.getElementById('hourlyRate').value = localStorage.getItem('hourlyRate');
         if(localStorage.getItem('otRate')) document.getElementById('otRate').value = localStorage.getItem('otRate');
+        if(localStorage.getItem('maxStdHours')) document.getElementById('maxStdHours').value = localStorage.getItem('maxStdHours');
         
-        // Restore logged daily hours
         days.forEach(day => {
-            if(localStorage.getItem(`std-${day}`)) document.getElementById(`std-${day}`).value = localStorage.getItem(`std-${day}`);
-            if(localStorage.getItem(`ot-${day}`)) document.getElementById(`ot-${day}`).value = localStorage.getItem(`ot-${day}`);
+            if(localStorage.getItem(`start-${day}`)) document.getElementById(`start-${day}`).value = localStorage.getItem(`start-${day}`);
+            if(localStorage.getItem(`end-${day}`)) document.getElementById(`end-${day}`).value = localStorage.getItem(`end-${day}`);
         });
 
         calculatePay();
     }
 
+    function getDuration(startVal, endVal) {
+        if(!startVal || !endVal) return 0;
+        
+        const [startH, startM] = startVal.split(':').map(Number);
+        const [endH, endM] = endVal.split(':').map(Number);
+        
+        let startDec = startH + (startM / 60);
+        let endDec = endH + (endM / 60);
+        
+        if (endDec < startDec) {
+            endDec += 24; // Handle shift over midnight
+        }
+        
+        return Math.max(0, endDec - startDec); // No lunch deduction
+    }
+
     function calculatePay() {
         const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
         const otRate = parseFloat(document.getElementById('otRate').value) || 0;
+        const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
 
         localStorage.setItem('hourlyRate', hourlyRate);
         localStorage.setItem('otRate', otRate);
+        localStorage.setItem('maxStdHours', maxStdHours);
 
         let totalStdHours = 0;
         let totalOtHours = 0;
 
         days.forEach(day => {
-            const stdHrs = parseFloat(document.getElementById(`std-${day}`).value) || 0;
-            const otHrs = parseFloat(document.getElementById(`ot-${day}`).value) || 0;
+            const startVal = document.getElementById(`start-${day}`).value;
+            const endVal = document.getElementById(`end-${day}`).value;
             
-            totalStdHours += stdHrs;
-            totalOtHours += otHrs;
+            localStorage.setItem(`start-${day}`, startVal);
+            localStorage.setItem(`end-${day}`, endVal);
 
-            localStorage.setItem(`std-${day}`, stdHrs);
-            localStorage.setItem(`ot-${day}`, otHrs);
+            const dailyHours = getDuration(startVal, endVal);
+
+            if(dailyHours > 0) {
+                if(dailyHours <= maxStdHours) {
+                    totalStdHours += dailyHours;
+                } else {
+                    totalStdHours += maxStdHours;
+                    totalOtHours += (dailyHours - maxStdHours);
+                }
+            }
         });
 
         const standardPay = hourlyRate * totalStdHours;
         const otPayTotal = otRate * totalOtHours;
         const grossPay = standardPay + otPayTotal;
 
-        // --- UK Tax Pro-Rata Rules ---
+        // --- UK Tax Rules (Weekly Pro-Rata) ---
         const weeklyTaxThreshold = 12570 / 52; 
         let incomeTax = 0;
         if (grossPay > weeklyTaxThreshold) {
@@ -318,7 +342,6 @@
 
         const netPay = grossPay - incomeTax - nationalInsurance;
 
-        // Update UI View
         document.getElementById('totalStdHours').innerText = totalStdHours.toFixed(2) + ' hrs';
         document.getElementById('totalOtHours').innerText = totalOtHours.toFixed(2) + ' hrs';
         document.getElementById('standardPay').innerText = '£' + standardPay.toFixed(2);
@@ -331,35 +354,53 @@
 
     function sendReport() {
         let message = `Weekly Hours Summary:\n\n`;
-        let totalStd = 0;
-        let totalOt = 0;
+        let grandStd = 0;
+        let grandOt = 0;
+        const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
 
         days.forEach(day => {
-            const std = parseFloat(document.getElementById(`std-${day}`).value) || 0;
-            const ot = parseFloat(document.getElementById(`ot-${day}`).value) || 0;
-            if (std > 0 || ot > 0) {
-                message += `${day}: Std: ${std}h | OT: ${ot}h\n`;
-                totalStd += std;
-                totalOt += ot;
+            const start = document.getElementById(`start-${day}`).value;
+            const end = document.getElementById(`end-${day}`).value;
+            
+            if (start && end) {
+                const totalHours = getDuration(start, end);
+                let std = 0;
+                let ot = 0;
+                
+                if(totalHours <= maxStdHours) {
+                    std = totalHours;
+                } else {
+                    std = maxStdHours;
+                    ot = totalHours - maxStdHours;
+                }
+
+                message += `${day}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
+                if(ot > 0) {
+                    message += ` | OT: ${ot.toFixed(2)}h`;
+                }
+                message += `)\n`;
+
+                grandStd += std;
+                grandOt += ot;
             }
         });
 
-        message += `\nTotal Standard Hours: ${totalStd.toFixed(2)}`;
-        message += `\nTotal Overtime Hours: ${totalOt.toFixed(2)}`;
+        message += `\nTotal Standard Hours: ${grandStd.toFixed(2)}`;
+        if (grandOt > 0) {
+            message += `\nTotal Overtime Hours: ${grandOt.toFixed(2)}`;
+        }
         message += `\nEst. Gross Pay: £${document.getElementById('grossPay').innerText.replace('£', '')}`;
         message += `\nEst. Take-Home: ${document.getElementById('netPay').innerText}`;
 
-        // Uses a standard system text message link protocol (sms:)
-        // It triggers the native iOS or Android messaging application with pre-composed text.
         window.location.href = "sms:?&body=" + encodeURIComponent(message);
     }
 
     function clearHoursOnly() {
         days.forEach(day => {
-            localStorage.removeItem(`std-${day}`);
-            localStorage.removeItem(`ot-${day}`);
-            document.getElementById(`std-${day}`).value = '0';
-            document.getElementById(`ot-${day}`).value = '0';
+            localStorage.removeItem(`start-${day}`);
+            localStorage.removeItem(`end-${day}`);
+            document.getElementById(`start-${day}`).value = '';
+            document.getElementById(`end-${day}`).value = '';
         });
         calculatePay();
     }
