@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Survey Hours Tracker</title>
+    <!-- Web App Manifest so it behaves like a real app on iPhone -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --primary: #007aff;
+            --background: #f2f2f7;
+            --card: #ffffff;
+            --text: #1c1c1e;
+            --muted: #8e8e93;
+            --danger: #ff3b30;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            padding-top: env(safe-area-inset-top);
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e5ea;
+        }
+        .row:last-child {
+            border-bottom: none;
+        }
+        label {
+            font-weight: 500;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #d1d1d6;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: right;
+            -webkit-appearance: none;
+        }
+        .summary-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .net-pay {
+            color: #34c759;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hours Tracker</h1>
+
+    <!-- Setup / Rates -->
+    <div class="card">
+        <div class="card-title">Settings</div>
+        <div class="row">
+            <label for="rate">Hourly Rate (£)</label>
+            <input type="number" id="rate" value="12.00" step="0.01">
+        </div>
+    </div>
+
+    <!-- Daily Hours -->
+    <div class="card">
+        <div class="card-title">Log Hours</div>
+        <div class="row">
+            <label for="mon">Monday</label>
+            <input type="number" id="mon" value="0" step="0.5" min="0">
+        </div>
+        <div class="row">
+            <label for="tue">Tuesday</label>
+            <input type="number" id="tue" value="0" step="0.5" min="0">
+        </div>
+        <div class="row">
+            <label for="wed">Wednesday</label>
+            <input type="number" id="wed" value="0" step="0.5" min="0">
+        </div>
+        <div class="row">
+            <label for="thu">Thursday</label>
+            <input type="number" id="thu" value="0" step="0.5" min="0">
+        </div>
+        <div class="row">
+            <label for="fri">Friday</label>
+            <input type="number" id="fri" value="0" step="0.5" min="0">
+        </div>
+    </div>
+
+    <!-- Mileage -->
+    <div class="card">
+        <div class="card-title">Travel</div>
+        <div class="row">
+            <label for="mileage">Mileage (Miles)</label>
+            <input type="number" id="mileage" value="0" step="1" min="0">
+        </div>
+    </div>
+
+    <!-- Live Calculations -->
+    <div class="card">
+        <div class="card-title">Weekly Estimates</div>
+        <div class="row">
+            <span>Total Hours:</span>
+            <span id="total-hours" class="summary-value">0 hrs</span>
+        </div>
+        <div class="row">
+            <span>Gross Wages:</span>
+            <span id="gross-pay" class="summary-value">£0.00</span>
+        </div>
+        <div class="row">
+            <span>Est. Tax & NI (20% flat):</span>
+            <span id="tax-ni" class="summary-value" style="color: var(--danger);">-£0.00</span>
+        </div>
+        <div class="row">
+            <span>Mileage Pay (45p/mi):</span>
+            <span id="mileage-pay" class="summary-value">£0.00</span>
+        </div>
+        <div class="row" style="border-top: 2px solid #e5e5ea; padding-top: 15px;">
+            <strong>Est. Take Home:</strong>
+            <strong id="net-pay" class="net-pay">£0.00</strong>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn-primary" onclick="sendToJess()">Send to Jess</button>
+    <button class="btn-danger" onclick="resetWeek()">Reset Week</button>
+</div>
+
+<script>
+    // Fields to save and load
+    const fields = ['rate', 'mon', 'tue', 'wed', 'thu', 'fri', 'mileage'];
+
+    // Load saved data from LocalStorage on open
+    window.onload = function() {
+        fields.forEach(field => {
+            const savedValue = localStorage.getItem(field);
+            if (savedValue !== null) {
+                document.getElementById(field).value = savedValue;
+            }
+        });
+        calculatePay();
+    };
+
+    // Save and recalculate on input change
+    fields.forEach(field => {
+        document.getElementById(field).addEventListener('input', () => {
+            localStorage.setItem(field, document.getElementById(field).value);
+            calculatePay();
+        });
+    });
+
+    function calculatePay() {
+        const rate = parseFloat(document.getElementById('rate').value) || 0;
+        const mon = parseFloat(document.getElementById('mon').value) || 0;
+        const tue = parseFloat(document.getElementById('tue').value) || 0;
+        const wed = parseFloat(document.getElementById('wed').value) || 0;
+        const thu = parseFloat(document.getElementById('thu').value) || 0;
+        const fri = parseFloat(document.getElementById('fri').value) || 0;
+        const mileage = parseFloat(document.getElementById('mileage').value) || 0;
+
+        const totalHours = mon + tue + wed + thu + fri;
+        const grossPay = totalHours * rate;
+        
+        // Simple 20% estimated flat deduction for Tax/NI (adjustable inside settings/code if needed)
+        const taxNi = grossPay * 0.20; 
+        const mileagePay = mileage * 0.45; // HMRC standard 45p per mile rate
+        const netPay = (grossPay - taxNi) + mileagePay;
+
+        // Update UI
+        document.getElementById('total-hours').innerText = totalHours.toFixed(1) + ' hrs';
+        document.getElementById('gross-pay').innerText = '£' + grossPay.toFixed(2);
+        document.getElementById('tax-ni').innerText = '-£' + taxNi.toFixed(2);
+        document.getElementById('mileage-pay').innerText = '£' + mileagePay.toFixed(2);
+        document.getElementById('net-pay').innerText = '£' + netPay.toFixed(2);
+    }
+
+    function sendToJess() {
+        const rate = parseFloat(document.getElementById('rate').value) || 0;
+        const mon = parseFloat(document.getElementById('mon').value) || 0;
+        const tue = parseFloat(document.getElementById('tue').value) || 0;
+        const wed = parseFloat(document.getElementById('wed').value) || 0;
+        const thu = parseFloat(document.getElementById('thu').value) || 0;
+        const fri = parseFloat(document.getElementById('fri').value) || 0;
+        const mileage = parseFloat(document.getElementById('mileage').value) || 0;
+
+        const totalHours = mon + tue + wed + thu + fri;
+        const grossPay = totalHours * rate;
+        const mileagePay = mileage * 0.45;
+
+        // Build the text message template
+        const message = 
+`Hi Jess, here are my hours for this week:
+
+• Mon: ${mon} hrs
+• Tue: ${tue} hrs
+• Wed: ${wed} hrs
+• Thu: ${thu} hrs
+• Fri: ${fri} hrs
+
+Total Hours: ${totalHours} hrs (Rate: £${rate}/hr)
+Gross Pay: £${grossPay.toFixed(2)}
+Mileage: ${mileage} miles (Claim: £${mileagePay.toFixed(2)})`;
+
+        // Open native iOS Messages app pre-filled with the message
+        window.location.href = "sms:?&body=" + encodeURIComponent(message);
+    }
+
+    function resetWeek() {
+        if (confirm("Are you sure you want to clear this week's logged hours and mileage? Settings won't change.")) {
+            const toReset = ['mon', 'tue', 'wed', 'thu', 'fri', 'mileage'];
+            toReset.forEach(field => {
+                document.getElementById(field).value = 0;
+                localStorage.setItem(field, 0);
+            });
+            calculatePay();
+        }
+    }
+</script>
+
+</body>
+</html>
