@@ -2,276 +2,428 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Survey Hours Tracker</title>
-    <!-- Web App Manifest so it behaves like a real app on iPhone -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Shift & Pay Tracker</title>
     <style>
         :root {
-            --primary: #007aff;
-            --background: #f2f2f7;
-            --card: #ffffff;
-            --text: #1c1c1e;
-            --muted: #8e8e93;
-            --danger: #ff3b30;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --accent: #3182ce;
+            --accent-hover: #2b6cb0;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --success-hover: #2f855a;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
-            padding-top: env(safe-area-inset-top);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
         }
+
         .container {
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 600px;
+            width: 100%;
         }
+
         h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 1.4rem;
             text-align: center;
+            margin-bottom: 20px;
+            color: #1a202c;
         }
+
         .card {
-            background: var(--card);
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
+
+        h2 {
+            font-size: 1.1rem; 
             margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 5px;
+            color: #4a5568;
+        }
+
+        .form-group {
             margin-bottom: 12px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        .row {
-            display: flex;
-            justify-content: space-between;
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        input[type="number"], input[type="time"], input[type="text"] {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .day-row {
+            display: grid;
+            grid-template-columns: 85px 1.2fr 0.9fr 0.9fr;
+            gap: 8px;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e5ea;
+            margin-bottom: 12px;
         }
-        .row:last-child {
+
+        .day-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .day-header {
+            display: grid;
+            grid-template-columns: 85px 1.2fr 0.9fr 0.9fr;
+            gap: 8px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-send {
+            background-color: var(--success);
+            margin-top: 10px;
+        }
+
+        .btn-send:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #718096;
+            border: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f7fafc;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .results-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .results-table tr:last-child td {
             border-bottom: none;
         }
-        label {
-            font-weight: 500;
-        }
-        input[type="number"] {
-            width: 80px;
-            padding: 8px;
-            border: 1px solid #d1d1d6;
-            border-radius: 8px;
-            font-size: 16px;
+
+        .text-right {
             text-align: right;
-            -webkit-appearance: none;
         }
-        .summary-value {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .net-pay {
-            color: #34c759;
-            font-size: 18px;
-            font-weight: 700;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        button:active {
-            opacity: 0.8;
-        }
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        .btn-danger {
-            background-color: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
+
+        .highlight-row {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--success);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Hours Tracker</h1>
+    <h1>Sam's Shift & Pay Tracker</h1>
 
-    <!-- Setup / Rates -->
+    <!-- Setup Card -->
     <div class="card">
-        <div class="card-title">Settings</div>
-        <div class="row">
-            <label for="rate">Hourly Rate (£)</label>
-            <input type="number" id="rate" value="12.00" step="0.01">
+        <h2>1. Pay Rules Setup</h2>
+        <div class="grid-3">
+            <div class="form-group">
+                <label for="hourlyRate">Std Rate (£)</label>
+                <input type="number" id="hourlyRate" step="0.01" placeholder="12.50" oninput="calculatePay()">
+            </div>
+            <div class="form-group">
+                <label for="otRate">OT Rate (£)</label>
+                <input type="number" id="otRate" step="0.01" placeholder="18.75" oninput="calculatePay()">
+            </div>
+            <div class="form-group">
+                <label for="maxStdHours">OT Kicks In After</label>
+                <input type="number" id="maxStdHours" step="0.5" value="9" oninput="calculatePay()">
+            </div>
         </div>
     </div>
 
-    <!-- Daily Hours -->
+    <!-- Daily Log Card -->
     <div class="card">
-        <div class="card-title">Log Hours</div>
-        <div class="row">
-            <label for="mon">Monday</label>
-            <input type="number" id="mon" value="0" step="0.5" min="0">
+        <h2>2. Enter Times & Locations</h2>
+        <div class="day-header">
+            <div>Day</div>
+            <div>Site/Location</div>
+            <div>Start</div>
+            <div>Finish</div>
         </div>
-        <div class="row">
-            <label for="tue">Tuesday</label>
-            <input type="number" id="tue" value="0" step="0.5" min="0">
+        
+        <div id="daysContainer">
+            <!-- Populated via JavaScript -->
         </div>
-        <div class="row">
-            <label for="wed">Wednesday</label>
-            <input type="number" id="wed" value="0" step="0.5" min="0">
-        </div>
-        <div class="row">
-            <label for="thu">Thursday</label>
-            <input type="number" id="thu" value="0" step="0.5" min="0">
-        </div>
-        <div class="row">
-            <label for="fri">Friday</label>
-            <input type="number" id="fri" value="0" step="0.5" min="0">
-        </div>
+
+        <button class="btn btn-send" onclick="sendReport()">Send Weekly Report</button>
+        <button class="btn btn-secondary" onclick="clearHoursOnly()">Clear This Week's Entries</button>
     </div>
 
-    <!-- Mileage -->
+    <!-- Live Breakdown Card -->
     <div class="card">
-        <div class="card-title">Travel</div>
-        <div class="row">
-            <label for="mileage">Mileage (Miles)</label>
-            <input type="number" id="mileage" value="0" step="1" min="0">
-        </div>
+        <h2>Estimated Weekly Breakdown</h2>
+        <table class="results-table">
+            <tr>
+                <td>Total Standard Hours</td>
+                <td id="totalStdHours" class="text-right">0.00 hrs</td>
+            </tr>
+            <tr>
+                <td>Total Overtime Hours</td>
+                <td id="totalOtHours" class="text-right">0.00 hrs</td>
+            </tr>
+            <tr>
+                <td>Standard Pay</td>
+                <td id="standardPay" class="text-right">£0.00</td>
+            </tr>
+            <tr>
+                <td>Overtime Pay</td>
+                <td id="otPayTotal" class="text-right">£0.00</td>
+            </tr>
+            <tr style="font-weight: 600;">
+                <td>Total Gross Pay</td>
+                <td id="grossPay" class="text-right">£0.00</td>
+            </tr>
+            <tr>
+                <td>Income Tax (PAYE Estimate)</td>
+                <td id="incomeTax" class="text-right" style="color: #e53e3e;">-£0.00</td>
+            </tr>
+            <tr>
+                <td>National Insurance</td>
+                <td id="nationalInsurance" class="text-right" style="color: #e53e3e;">-£0.00</td>
+            </tr>
+            <tr class="highlight-row">
+                <td>Estimated Take-Home Pay</td>
+                <td id="netPay" class="text-right">£0.00</td>
+            </tr>
+        </table>
     </div>
-
-    <!-- Live Calculations -->
-    <div class="card">
-        <div class="card-title">Weekly Estimates</div>
-        <div class="row">
-            <span>Total Hours:</span>
-            <span id="total-hours" class="summary-value">0 hrs</span>
-        </div>
-        <div class="row">
-            <span>Gross Wages:</span>
-            <span id="gross-pay" class="summary-value">£0.00</span>
-        </div>
-        <div class="row">
-            <span>Est. Tax & NI (20% flat):</span>
-            <span id="tax-ni" class="summary-value" style="color: var(--danger);">-£0.00</span>
-        </div>
-        <div class="row">
-            <span>Mileage Pay (45p/mi):</span>
-            <span id="mileage-pay" class="summary-value">£0.00</span>
-        </div>
-        <div class="row" style="border-top: 2px solid #e5e5ea; padding-top: 15px;">
-            <strong>Est. Take Home:</strong>
-            <strong id="net-pay" class="net-pay">£0.00</strong>
-        </div>
-    </div>
-
-    <!-- Actions -->
-    <button class="btn-primary" onclick="sendToJess()">Send to Jess</button>
-    <button class="btn-danger" onclick="resetWeek()">Reset Week</button>
 </div>
 
 <script>
-    // Fields to save and load
-    const fields = ['rate', 'mon', 'tue', 'wed', 'thu', 'fri', 'mileage'];
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    // Load saved data from LocalStorage on open
-    window.onload = function() {
-        fields.forEach(field => {
-            const savedValue = localStorage.getItem(field);
-            if (savedValue !== null) {
-                document.getElementById(field).value = savedValue;
-            }
-        });
-        calculatePay();
-    };
-
-    // Save and recalculate on input change
-    fields.forEach(field => {
-        document.getElementById(field).addEventListener('input', () => {
-            localStorage.setItem(field, document.getElementById(field).value);
-            calculatePay();
-        });
+    const container = document.getElementById('daysContainer');
+    days.forEach(day => {
+        const dayRow = document.createElement('div');
+        dayRow.className = 'day-row';
+        dayRow.innerHTML = `
+            <div class="day-label">${day}</div>
+            <input type="text" id="site-${day}" placeholder="Site name" oninput="calculatePay()">
+            <input type="time" id="start-${day}" oninput="calculatePay()">
+            <input type="time" id="end-${day}" oninput="calculatePay()">
+        `;
+        container.appendChild(dayRow);
     });
 
-    function calculatePay() {
-        const rate = parseFloat(document.getElementById('rate').value) || 0;
-        const mon = parseFloat(document.getElementById('mon').value) || 0;
-        const tue = parseFloat(document.getElementById('tue').value) || 0;
-        const wed = parseFloat(document.getElementById('wed').value) || 0;
-        const thu = parseFloat(document.getElementById('thu').value) || 0;
-        const fri = parseFloat(document.getElementById('fri').value) || 0;
-        const mileage = parseFloat(document.getElementById('mileage').value) || 0;
-
-        const totalHours = mon + tue + wed + thu + fri;
-        const grossPay = totalHours * rate;
+    window.onload = function() {
+        if(localStorage.getItem('hourlyRate')) document.getElementById('hourlyRate').value = localStorage.getItem('hourlyRate');
+        if(localStorage.getItem('otRate')) document.getElementById('otRate').value = localStorage.getItem('otRate');
+        if(localStorage.getItem('maxStdHours')) document.getElementById('maxStdHours').value = localStorage.getItem('maxStdHours');
         
-        // Simple 20% estimated flat deduction for Tax/NI (adjustable inside settings/code if needed)
-        const taxNi = grossPay * 0.20; 
-        const mileagePay = mileage * 0.45; // HMRC standard 45p per mile rate
-        const netPay = (grossPay - taxNi) + mileagePay;
+        days.forEach(day => {
+            if(localStorage.getItem(`site-${day}`)) document.getElementById(`site-${day}`).value = localStorage.getItem(`site-${day}`);
+            if(localStorage.getItem(`start-${day}`)) document.getElementById(`start-${day}`).value = localStorage.getItem(`start-${day}`);
+            if(localStorage.getItem(`end-${day}`)) document.getElementById(`end-${day}`).value = localStorage.getItem(`end-${day}`);
+        });
 
-        // Update UI
-        document.getElementById('total-hours').innerText = totalHours.toFixed(1) + ' hrs';
-        document.getElementById('gross-pay').innerText = '£' + grossPay.toFixed(2);
-        document.getElementById('tax-ni').innerText = '-£' + taxNi.toFixed(2);
-        document.getElementById('mileage-pay').innerText = '£' + mileagePay.toFixed(2);
-        document.getElementById('net-pay').innerText = '£' + netPay.toFixed(2);
+        calculatePay();
     }
 
-    function sendToJess() {
-        const rate = parseFloat(document.getElementById('rate').value) || 0;
-        const mon = parseFloat(document.getElementById('mon').value) || 0;
-        const tue = parseFloat(document.getElementById('tue').value) || 0;
-        const wed = parseFloat(document.getElementById('wed').value) || 0;
-        const thu = parseFloat(document.getElementById('thu').value) || 0;
-        const fri = parseFloat(document.getElementById('fri').value) || 0;
-        const mileage = parseFloat(document.getElementById('mileage').value) || 0;
+    function getDuration(startVal, endVal) {
+        if(!startVal || !endVal) return 0;
+        
+        const [startH, startM] = startVal.split(':').map(Number);
+        const [endH, endM] = endVal.split(':').map(Number);
+        
+        let startDec = startH + (startM / 60);
+        let endDec = endH + (endM / 60);
+        
+        if (endDec < startDec) {
+            endDec += 24; 
+        }
+        
+        return Math.max(0, endDec - startDec);
+    }
 
-        const totalHours = mon + tue + wed + thu + fri;
-        const grossPay = totalHours * rate;
-        const mileagePay = mileage * 0.45;
+    function calculatePay() {
+        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+        const otRate = parseFloat(document.getElementById('otRate').value) || 0;
+        const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
 
-        // Build the text message template
-        const message = 
-`Hi Jess, here are my hours for this week:
+        localStorage.setItem('hourlyRate', hourlyRate);
+        localStorage.setItem('otRate', otRate);
+        localStorage.setItem('maxStdHours', maxStdHours);
 
-• Mon: ${mon} hrs
-• Tue: ${tue} hrs
-• Wed: ${wed} hrs
-• Thu: ${thu} hrs
-• Fri: ${fri} hrs
+        let totalStdHours = 0;
+        let totalOtHours = 0;
 
-Total Hours: ${totalHours} hrs (Rate: £${rate}/hr)
-Gross Pay: £${grossPay.toFixed(2)}
-Mileage: ${mileage} miles (Claim: £${mileagePay.toFixed(2)})`;
+        days.forEach(day => {
+            const siteVal = document.getElementById(`site-${day}`).value;
+            const startVal = document.getElementById(`start-${day}`).value;
+            const endVal = document.getElementById(`end-${day}`).value;
+            
+            localStorage.setItem(`site-${day}`, siteVal);
+            localStorage.setItem(`start-${day}`, startVal);
+            localStorage.setItem(`end-${day}`, endVal);
 
-        // Open native iOS Messages app pre-filled with the message
+            const dailyHours = getDuration(startVal, endVal);
+
+            if(dailyHours > 0) {
+                if(dailyHours <= maxStdHours) {
+                    totalStdHours += dailyHours;
+                } else {
+                    totalStdHours += maxStdHours;
+                    totalOtHours += (dailyHours - maxStdHours);
+                }
+            }
+        });
+
+        const standardPay = hourlyRate * totalStdHours;
+        const otPayTotal = otRate * totalOtHours;
+        const grossPay = standardPay + otPayTotal;
+
+        // --- UK Tax Rules (Weekly Pro-Rata) ---
+        const weeklyTaxThreshold = 12570 / 52; 
+        let incomeTax = 0;
+        if (grossPay > weeklyTaxThreshold) {
+            incomeTax = (grossPay - weeklyTaxThreshold) * 0.20;
+        }
+
+        const weeklyNIThreshold = 242;
+        let nationalInsurance = 0;
+        if (grossPay > weeklyNIThreshold) {
+            nationalInsurance = (grossPay - weeklyNIThreshold) * 0.08;
+        }
+
+        const netPay = grossPay - incomeTax - nationalInsurance;
+
+        document.getElementById('totalStdHours').innerText = totalStdHours.toFixed(2) + ' hrs';
+        document.getElementById('totalOtHours').innerText = totalOtHours.toFixed(2) + ' hrs';
+        document.getElementById('standardPay').innerText = '£' + standardPay.toFixed(2);
+        document.getElementById('otPayTotal').innerText = '£' + otPayTotal.toFixed(2);
+        document.getElementById('grossPay').innerText = '£' + grossPay.toFixed(2);
+        document.getElementById('incomeTax').innerText = '-£' + incomeTax.toFixed(2);
+        document.getElementById('nationalInsurance').innerText = '-£' + nationalInsurance.toFixed(2);
+        document.getElementById('netPay').innerText = '£' + netPay.toFixed(2);
+    }
+
+    function sendReport() {
+        let message = `Weekly Hours Summary:\n\n`;
+        let grandStd = 0;
+        let grandOt = 0;
+        
+        const rawMaxField = document.getElementById('maxStdHours').value;
+        const maxStdHours = parseFloat(rawMaxField) || 9;
+
+        days.forEach(day => {
+            const site = document.getElementById(`site-${day}`).value.trim();
+            const start = document.getElementById(`start-${day}`).value;
+            const end = document.getElementById(`end-${day}`).value;
+            
+            if (start && end && start !== "" && end !== "") {
+                const totalHours = getDuration(start, end);
+                let std = 0;
+                let ot = 0;
+                
+                if(totalHours <= maxStdHours) {
+                    std = totalHours;
+                } else {
+                    std = maxStdHours;
+                    ot = totalHours - maxStdHours;
+                }
+
+                // Attach site name if provided
+                const siteLabel = site ? ` [${site}]` : '';
+
+                message += `${day}${siteLabel}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
+                if(ot > 0) {
+                    message += ` | OT: ${ot.toFixed(2)}h`;
+                }
+                message += `)\n`;
+
+                grandStd += std;
+                grandOt += ot;
+            }
+        });
+
+        message += `\nTotal Standard Hours: ${grandStd.toFixed(2)}`;
+        if (grandOt > 0) {
+            message += `\nTotal Overtime Hours: ${grandOt.toFixed(2)}`;
+        }
+        
+        const grossLabel = document.getElementById('grossPay').innerText.replace('£', '');
+        const netLabel = document.getElementById('netPay').innerText;
+        
+        message += `\nEst. Gross Pay: £${grossLabel}`;
+        message += `\nEst. Take-Home: ${netLabel}`;
+
         window.location.href = "sms:?&body=" + encodeURIComponent(message);
     }
 
-    function resetWeek() {
-        if (confirm("Are you sure you want to clear this week's logged hours and mileage? Settings won't change.")) {
-            const toReset = ['mon', 'tue', 'wed', 'thu', 'fri', 'mileage'];
-            toReset.forEach(field => {
-                document.getElementById(field).value = 0;
-                localStorage.setItem(field, 0);
-            });
-            calculatePay();
-        }
+    function clearHoursOnly() {
+        days.forEach(day => {
+            localStorage.removeItem(`site-${day}`);
+            localStorage.removeItem(`start-${day}`);
+            localStorage.removeItem(`end-${day}`);
+            document.getElementById(`site-${day}`).value = '';
+            document.getElementById(`start-${day}`).value = '';
+            document.getElementById(`end-${day}`).value = '';
+        });
+        calculatePay();
     }
 </script>
 
