@@ -27,7 +27,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
         }
 
@@ -67,38 +67,45 @@
             font-size: 0.85rem;
         }
 
-        input[type="number"], input[type="time"], input[type="text"] {
+        input[type="number"], input[type="time"], input[type="text"], input[type="date"] {
             width: 100%;
-            padding: 9px;
+            padding: 8px;
             border: 1px solid var(--border);
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 0.95rem;
         }
 
-        .grid-3 {
+        .grid-4 {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
         }
 
         .day-row {
             display: grid;
-            grid-template-columns: 85px 1.2fr 0.9fr 0.9fr;
-            gap: 8px;
+            grid-template-columns: 105px 1.2fr 0.8fr 0.8fr 0.7fr;
+            gap: 6px;
             align-items: center;
             margin-bottom: 12px;
         }
 
         .day-label {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+
+        .day-subtext {
+            font-size: 0.75rem;
+            color: #718096;
+            font-weight: normal;
         }
 
         .day-header {
             display: grid;
-            grid-template-columns: 85px 1.2fr 0.9fr 0.9fr;
-            gap: 8px;
+            grid-template-columns: 105px 1.2fr 0.8fr 0.8fr 0.7fr;
+            gap: 6px;
             font-size: 0.7rem;
             text-transform: uppercase;
             font-weight: 700;
@@ -169,6 +176,17 @@
             font-size: 1.1rem;
             color: var(--success);
         }
+
+        @media (max-width: 500px) {
+            .day-row, .day-header {
+                grid-template-columns: 80px 1.1fr 0.8fr 0.8fr 0.7fr;
+                gap: 4px;
+            }
+            input[type="number"], input[type="time"], input[type="text"], input[type="date"] {
+                padding: 6px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -178,8 +196,12 @@
 
     <!-- Setup Card -->
     <div class="card">
-        <h2>1. Pay Rules Setup</h2>
-        <div class="grid-3">
+        <h2>1. Pay & Week Setup</h2>
+        <div class="form-group">
+            <label for="weekCommencing">Week Commencing (Monday Date)</label>
+            <input type="date" id="weekCommencing" onchange="updateDatesAndPay()">
+        </div>
+        <div class="grid-4">
             <div class="form-group">
                 <label for="hourlyRate">Std Rate (£)</label>
                 <input type="number" id="hourlyRate" step="0.01" placeholder="12.50" oninput="calculatePay()">
@@ -189,7 +211,11 @@
                 <input type="number" id="otRate" step="0.01" placeholder="18.75" oninput="calculatePay()">
             </div>
             <div class="form-group">
-                <label for="maxStdHours">OT Kicks In After</label>
+                <label for="mileageRate">Per Mile (£)</label>
+                <input type="number" id="mileageRate" step="0.01" value="0.45" placeholder="0.45" oninput="calculatePay()">
+            </div>
+            <div class="form-group">
+                <label for="maxStdHours">OT After</label>
                 <input type="number" id="maxStdHours" step="0.5" value="9" oninput="calculatePay()">
             </div>
         </div>
@@ -197,12 +223,13 @@
 
     <!-- Daily Log Card -->
     <div class="card">
-        <h2>2. Enter Times & Locations</h2>
+        <h2>2. Enter Times, Locations & Miles</h2>
         <div class="day-header">
             <div>Day</div>
             <div>Site/Location</div>
             <div>Start</div>
             <div>Finish</div>
+            <div>Miles</div>
         </div>
         
         <div id="daysContainer">
@@ -234,7 +261,7 @@
                 <td id="otPayTotal" class="text-right">£0.00</td>
             </tr>
             <tr style="font-weight: 600;">
-                <td>Total Gross Pay</td>
+                <td>Gross Pay (Taxable)</td>
                 <td id="grossPay" class="text-right">£0.00</td>
             </tr>
             <tr>
@@ -245,8 +272,12 @@
                 <td>National Insurance</td>
                 <td id="nationalInsurance" class="text-right" style="color: #e53e3e;">-£0.00</td>
             </tr>
+            <tr>
+                <td>Mileage Reimbursement (Tax-Free)</td>
+                <td id="mileagePayTotal" class="text-right" style="color: #2b6cb0;">+£0.00</td>
+            </tr>
             <tr class="highlight-row">
-                <td>Estimated Take-Home Pay</td>
+                <td>Total Take-Home Pay</td>
                 <td id="netPay" class="text-right">£0.00</td>
             </tr>
         </table>
@@ -261,25 +292,51 @@
         const dayRow = document.createElement('div');
         dayRow.className = 'day-row';
         dayRow.innerHTML = `
-            <div class="day-label">${day}</div>
+            <div class="day-label" id="label-${day}">
+                ${day}
+                <div class="day-subtext" id="subtext-${day}"></div>
+            </div>
             <input type="text" id="site-${day}" placeholder="Site name" oninput="calculatePay()">
             <input type="time" id="start-${day}" oninput="calculatePay()">
             <input type="time" id="end-${day}" oninput="calculatePay()">
+            <input type="number" id="miles-${day}" placeholder="0" min="0" step="1" oninput="calculatePay()">
         `;
         container.appendChild(dayRow);
     });
 
     window.onload = function() {
+        if(localStorage.getItem('weekCommencing')) document.getElementById('weekCommencing').value = localStorage.getItem('weekCommencing');
         if(localStorage.getItem('hourlyRate')) document.getElementById('hourlyRate').value = localStorage.getItem('hourlyRate');
         if(localStorage.getItem('otRate')) document.getElementById('otRate').value = localStorage.getItem('otRate');
+        if(localStorage.getItem('mileageRate')) document.getElementById('mileageRate').value = localStorage.getItem('mileageRate');
         if(localStorage.getItem('maxStdHours')) document.getElementById('maxStdHours').value = localStorage.getItem('maxStdHours');
         
         days.forEach(day => {
             if(localStorage.getItem(`site-${day}`)) document.getElementById(`site-${day}`).value = localStorage.getItem(`site-${day}`);
             if(localStorage.getItem(`start-${day}`)) document.getElementById(`start-${day}`).value = localStorage.getItem(`start-${day}`);
             if(localStorage.getItem(`end-${day}`)) document.getElementById(`end-${day}`).value = localStorage.getItem(`end-${day}`);
+            if(localStorage.getItem(`miles-${day}`)) document.getElementById(`miles-${day}`).value = localStorage.getItem(`miles-${day}`);
         });
 
+        updateDatesAndPay();
+    }
+
+    function updateDatesAndPay() {
+        const dateInput = document.getElementById('weekCommencing').value;
+        if(dateInput) {
+            localStorage.setItem('weekCommencing', dateInput);
+            const baseDate = new Date(dateInput + 'T00:00:00');
+            days.forEach((day, index) => {
+                const currentDayDate = new Date(baseDate);
+                currentDayDate.setDate(baseDate.getDate() + index);
+                const dayFormatted = currentDayDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
+                document.getElementById(`subtext-${day}`).innerText = dayFormatted;
+            });
+        } else {
+            days.forEach(day => {
+                document.getElementById(`subtext-${day}`).innerText = '';
+            });
+        }
         calculatePay();
     }
 
@@ -302,23 +359,30 @@
     function calculatePay() {
         const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
         const otRate = parseFloat(document.getElementById('otRate').value) || 0;
+        const mileageRate = parseFloat(document.getElementById('mileageRate').value) || 0;
         const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
 
         localStorage.setItem('hourlyRate', hourlyRate);
         localStorage.setItem('otRate', otRate);
+        localStorage.setItem('mileageRate', mileageRate);
         localStorage.setItem('maxStdHours', maxStdHours);
 
         let totalStdHours = 0;
         let totalOtHours = 0;
+        let totalMiles = 0;
 
         days.forEach(day => {
             const siteVal = document.getElementById(`site-${day}`).value;
             const startVal = document.getElementById(`start-${day}`).value;
             const endVal = document.getElementById(`end-${day}`).value;
+            const milesVal = parseFloat(document.getElementById(`miles-${day}`).value) || 0;
             
             localStorage.setItem(`site-${day}`, siteVal);
             localStorage.setItem(`start-${day}`, startVal);
             localStorage.setItem(`end-${day}`, endVal);
+            localStorage.setItem(`miles-${day}`, milesVal);
+
+            totalMiles += milesVal;
 
             const dailyHours = getDuration(startVal, endVal);
 
@@ -335,6 +399,7 @@
         const standardPay = hourlyRate * totalStdHours;
         const otPayTotal = otRate * totalOtHours;
         const grossPay = standardPay + otPayTotal;
+        const mileagePayTotal = totalMiles * mileageRate;
 
         // --- UK Tax Rules (Weekly Pro-Rata) ---
         const weeklyTaxThreshold = 12570 / 52; 
@@ -349,7 +414,8 @@
             nationalInsurance = (grossPay - weeklyNIThreshold) * 0.08;
         }
 
-        const netPay = grossPay - incomeTax - nationalInsurance;
+        // Mileage is added net/tax-free
+        const netPay = (grossPay - incomeTax - nationalInsurance) + mileagePayTotal;
 
         document.getElementById('totalStdHours').innerText = totalStdHours.toFixed(2) + ' hrs';
         document.getElementById('totalOtHours').innerText = totalOtHours.toFixed(2) + ' hrs';
@@ -358,13 +424,22 @@
         document.getElementById('grossPay').innerText = '£' + grossPay.toFixed(2);
         document.getElementById('incomeTax').innerText = '-£' + incomeTax.toFixed(2);
         document.getElementById('nationalInsurance').innerText = '-£' + nationalInsurance.toFixed(2);
+        document.getElementById('mileagePayTotal').innerText = '+£' + mileagePayTotal.toFixed(2) + ` (${totalMiles} mi)`;
         document.getElementById('netPay').innerText = '£' + netPay.toFixed(2);
     }
 
     function sendReport() {
-        let message = `Weekly Hours Summary:\n\n`;
+        const dateInput = document.getElementById('weekCommencing').value;
+        let headerText = "Weekly Hours Summary";
+        if(dateInput) {
+            const baseDate = new Date(dateInput + 'T00:00:00');
+            headerText += ` (w/c ${baseDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })})`;
+        }
+        let message = `${headerText}:\n\n`;
+        
         let grandStd = 0;
         let grandOt = 0;
+        let grandMiles = 0;
         
         const rawMaxField = document.getElementById('maxStdHours').value;
         const maxStdHours = parseFloat(rawMaxField) || 9;
@@ -373,8 +448,10 @@
             const site = document.getElementById(`site-${day}`).value.trim();
             const start = document.getElementById(`start-${day}`).value;
             const end = document.getElementById(`end-${day}`).value;
+            const miles = parseFloat(document.getElementById(`miles-${day}`).value) || 0;
+            const dateSubtext = document.getElementById(`subtext-${day}`).innerText;
             
-            if (start && end && start !== "" && end !== "") {
+            if ((start && end && start !== "" && end !== "") || miles > 0) {
                 const totalHours = getDuration(start, end);
                 let std = 0;
                 let ot = 0;
@@ -386,17 +463,21 @@
                     ot = totalHours - maxStdHours;
                 }
 
-                // Attach site name if provided
+                const dayLabel = dateSubtext ? `${day} (${dateSubtext})` : day;
                 const siteLabel = site ? ` [${site}]` : '';
 
-                message += `${day}${siteLabel}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
-                if(ot > 0) {
-                    message += ` | OT: ${ot.toFixed(2)}h`;
+                if (start && end) {
+                    message += `${dayLabel}${siteLabel}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
+                    if(ot > 0) message += ` | OT: ${ot.toFixed(2)}h`;
+                    if(miles > 0) message += ` | ${miles}mi`;
+                    message += `)\n`;
+                } else if(miles > 0) {
+                    message += `${dayLabel}${siteLabel}: ${miles} miles\n`;
                 }
-                message += `)\n`;
 
                 grandStd += std;
                 grandOt += ot;
+                grandMiles += miles;
             }
         });
 
@@ -404,12 +485,15 @@
         if (grandOt > 0) {
             message += `\nTotal Overtime Hours: ${grandOt.toFixed(2)}`;
         }
+        if (grandMiles > 0) {
+            message += `\nTotal Mileage: ${grandMiles} miles (£${document.getElementById('mileagePayTotal').innerText.split(' ')[0].replace('+£', '')})`;
+        }
         
         const grossLabel = document.getElementById('grossPay').innerText.replace('£', '');
         const netLabel = document.getElementById('netPay').innerText;
         
         message += `\nEst. Gross Pay: £${grossLabel}`;
-        message += `\nEst. Take-Home: ${netLabel}`;
+        message += `\nEst. Take-Home (inc. miles): ${netLabel}`;
 
         window.location.href = "sms:?&body=" + encodeURIComponent(message);
     }
@@ -419,9 +503,11 @@
             localStorage.removeItem(`site-${day}`);
             localStorage.removeItem(`start-${day}`);
             localStorage.removeItem(`end-${day}`);
+            localStorage.removeItem(`miles-${day}`);
             document.getElementById(`site-${day}`).value = '';
             document.getElementById(`start-${day}`).value = '';
             document.getElementById(`end-${day}`).value = '';
+            document.getElementById(`miles-${day}`).value = '';
         });
         calculatePay();
     }
