@@ -3,23 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sam's Timesheet & Pay Tracker Pro</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <title>Sam's Timesheet PRO</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --card-border: #e2e8f0;
+      --bg-canvas: #0f172a;
+      --bg-page: #f1f5f9;
+      --surface: #ffffff;
+      --border-color: #cbd5e1;
+      --border-subtle: #e2e8f0;
       --text-main: #0f172a;
       --text-muted: #64748b;
-      --brand: #0284c7;
-      --brand-hover: #0369a1;
-      --brand-light: #f0f9ff;
-      --accent-green: #10b981;
-      --accent-green-dark: #059669;
-      --accent-amber: #f59e0b;
-      --accent-amber-light: #fef3c7;
-      --danger: #ef4444;
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-subtle: #e0f2fe;
+      --emerald: #059669;
+      --emerald-subtle: #d1fae5;
+      --amber: #d97706;
+      --amber-subtle: #fef3c7;
+      --rose: #e11d48;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -30,177 +35,185 @@
     }
 
     body {
-      font-family: var(--font-family);
-      background-color: #f1f5f9;
+      font-family: var(--font-stack);
+      background-color: var(--bg-page);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-bottom: 75px;
-      touch-action: manipulation;
+      padding-bottom: 80px;
     }
 
-    /* App Header */
+    /* Top App Bar */
     header {
-      background: var(--bg);
+      background: var(--bg-canvas);
       color: #ffffff;
       padding: 12px 16px;
       position: sticky;
       top: 0;
-      z-index: 40;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 50;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .header-inner {
-      max-width: 680px;
+    .header-content {
+      max-width: 650px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .logo-group {
+    .brand-wrap {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .logo-badge {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      background: var(--brand);
+    .brand-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 19px;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
     }
 
-    .app-title {
+    .app-name {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: -0.2px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .pill-pro {
+    .pro-pill {
       font-size: 10px;
-      background: #0369a1;
-      color: #7dd3fc;
+      background: #0284c7;
+      color: #ffffff;
       padding: 1px 6px;
       border-radius: 4px;
       font-weight: 800;
       letter-spacing: 0.5px;
     }
 
-    .app-subtitle {
+    .app-desc {
       font-size: 11px;
       color: #94a3b8;
     }
 
-    .save-indicator {
+    .save-badge {
       font-size: 11px;
-      background: rgba(16, 185, 129, 0.15);
+      font-weight: 700;
       color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      padding: 3px 8px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 4px 10px;
       border-radius: 999px;
       display: flex;
       align-items: center;
       gap: 5px;
-      font-weight: 600;
     }
 
-    .pulse-dot {
+    .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: #10b981;
-      display: inline-block;
     }
 
-    /* Layout Containers */
+    /* Main Container */
     main {
-      max-width: 680px;
+      max-width: 650px;
       width: 100%;
       margin: 0 auto;
       padding: 12px;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .tab-view {
+    .tab-section {
       display: none;
       flex-direction: column;
       gap: 12px;
     }
 
-    .tab-view.active {
+    .tab-section.active {
       display: flex;
     }
 
-    /* Cards */
     .card {
-      background: #ffffff;
-      border: 1px solid var(--card-border);
+      background: var(--surface);
+      border: 1px solid var(--border-color);
       border-radius: 14px;
       padding: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
-    /* Navigation Bar Week Picker */
-    .week-nav-bar {
+    /* Week Navigation Bar */
+    .nav-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      background: #ffffff;
+      background: var(--surface);
+      border: 1px solid var(--border-color);
       border-radius: 14px;
       padding: 10px 12px;
-      border: 1px solid var(--card-border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
-    .btn-nav-arrow {
+    .btn-nav {
       background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      color: #334155;
-      width: 36px;
-      height: 36px;
+      border: 1px solid var(--border-subtle);
+      color: #1e293b;
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+      font-size: 18px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s;
+      cursor: pointer;
+      user-select: none;
     }
 
-    .btn-nav-arrow:active {
+    .btn-nav:active {
       background: #e2e8f0;
       transform: scale(0.96);
     }
 
-    .week-nav-center {
-      text-align: center;
+    .week-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
       flex: 1;
     }
 
-    .week-sublabel {
-      font-size: 10px;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      color: #94a3b8;
+    .week-meta-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .status-badge {
+    .week-caption {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+    }
+
+    .status-tag {
       font-size: 9px;
       font-weight: 800;
       text-transform: uppercase;
@@ -208,135 +221,151 @@
       border-radius: 999px;
     }
 
-    .status-badge.draft {
-      background: var(--accent-amber-light);
+    .status-tag.draft {
+      background: var(--amber-subtle);
       color: #92400e;
     }
 
-    .status-badge.submitted {
-      background: #d1fae5;
+    .status-tag.submitted {
+      background: var(--emerald-subtle);
       color: #065f46;
     }
 
-    .date-row {
+    .week-picker-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 2px;
+      gap: 8px;
     }
 
-    input[type="date"].week-date-input {
+    /* 16px to prevent iOS auto-zoom */
+    input[type="date"].date-picker-input {
       font-family: inherit;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--text-main);
       background: transparent;
       border: none;
-      border-bottom: 1px dashed #94a3b8;
-      padding: 1px 4px;
-      text-align: center;
-      cursor: pointer;
+      border-bottom: 2px dashed #94a3b8;
+      padding: 2px 4px;
       outline: none;
+      cursor: pointer;
     }
 
-    .today-btn {
+    .btn-quick-today {
       background: none;
       border: none;
-      color: var(--brand);
-      font-size: 12px;
+      color: var(--primary);
+      font-size: 13px;
       font-weight: 700;
-      cursor: pointer;
       text-decoration: underline;
+      cursor: pointer;
+      padding: 4px;
     }
 
-    /* Day Rows */
-    .days-table-card {
+    /* Days Sheet */
+    .sheet-card {
       padding: 0;
       overflow: hidden;
     }
 
-    .day-row {
+    .sheet-header-cols {
+      display: grid;
+      grid-template-columns: 1.4fr 1.05fr 1.05fr 0.8fr;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .day-block {
       padding: 10px 12px;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       gap: 6px;
       transition: background 0.15s;
     }
 
-    .day-row:last-child {
+    .day-block:last-child {
       border-bottom: none;
     }
 
-    .day-row-header {
+    .day-top-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .day-title-grp {
+    .day-title-group {
       display: flex;
       align-items: baseline;
       gap: 6px;
     }
 
-    .day-name {
-      font-weight: 700;
+    .day-name-txt {
+      font-weight: 800;
       font-size: 13px;
-      color: #1e293b;
+      color: #0f172a;
     }
 
-    .day-date-tag {
+    .day-date-txt {
       font-size: 11px;
-      color: #64748b;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--text-muted);
       background: #f1f5f9;
       padding: 1px 6px;
       border-radius: 4px;
     }
 
-    .day-summary-badge {
+    .day-calc-badge {
       font-size: 11px;
       font-weight: 700;
-      color: #475569;
-    }
-
-    .day-summary-badge.worked {
-      color: var(--brand-hover);
-      background: var(--brand-light);
-      padding: 1px 7px;
+      color: var(--text-muted);
+      padding: 2px 6px;
       border-radius: 6px;
     }
 
-    .inputs-grid {
+    .day-calc-badge.active {
+      color: #0369a1;
+      background: var(--primary-subtle);
+      font-weight: 800;
+    }
+
+    .day-inputs-grid {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 0.75fr;
+      grid-template-columns: 1.4fr 1.05fr 1.05fr 0.8fr;
       gap: 6px;
     }
 
-    .input-field {
+    /* 16px prevents iOS Safari from automatically zooming into the page */
+    input.cell-input {
       width: 100%;
       font-family: inherit;
-      padding: 8px 8px;
-      border: 1px solid #cbd5e1;
+      font-size: 16px;
+      padding: 8px 6px;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
-      font-size: 13px;
       background: #f8fafc;
       color: #0f172a;
       outline: none;
-      transition: border 0.15s, background 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    .input-field:focus {
-      border-color: var(--brand);
+    input.cell-input:focus {
+      border-color: var(--primary);
       background: #ffffff;
     }
 
-    .input-field:disabled {
+    input.cell-input:disabled {
       background: #e2e8f0;
       color: #64748b;
-      opacity: 0.75;
+      opacity: 0.8;
     }
 
     .input-center {
@@ -344,264 +373,253 @@
       font-weight: 600;
     }
 
-    .input-labels-row {
+    /* Dispatch & Submission Buttons */
+    .action-row {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 0.75fr;
-      gap: 6px;
-      padding: 6px 12px 2px 12px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #64748b;
-      background: #f8fafc;
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    /* Action Buttons Row */
-    .actions-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: 1.25fr 0.95fr;
       gap: 8px;
     }
 
-    .btn-main {
-      font-family: inherit;
-      padding: 12px 16px;
+    .btn-action {
+      min-height: 48px;
+      padding: 12px 14px;
       border-radius: 12px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: background 0.15s, transform 0.1s;
+      user-select: none;
+      transition: transform 0.1s, opacity 0.15s;
     }
 
-    .btn-main:active {
+    .btn-action:active {
       transform: scale(0.98);
     }
 
-    .btn-send {
-      background: var(--accent-green);
+    .btn-send-office {
+      background: var(--emerald);
       color: #ffffff;
-      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
     }
 
-    .btn-send:hover {
-      background: var(--accent-green-dark);
+    .btn-send-office:hover {
+      background: #047857;
     }
 
-    .btn-lock {
+    .btn-status-toggle {
       background: #1e293b;
       color: #ffffff;
     }
 
-    .btn-lock.unlocked {
-      background: #334155;
-    }
-
-    .btn-lock.submitted {
-      background: #d97706;
+    .btn-status-toggle.submitted {
+      background: var(--amber);
       color: #ffffff;
     }
 
-    /* Private Pay Estimation Card */
+    /* Personal Pay Card (Strictly Private) */
     .pay-card {
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border-color);
       background: #ffffff;
-      position: relative;
-    }
-
-    .pay-card-header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .pay-card-title {
+    .pay-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+
+    .pay-title {
       font-size: 13px;
       font-weight: 800;
-      color: #0f172a;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .private-tag {
+    .private-badge {
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       color: #b45309;
-      background: #fef3c7;
+      background: var(--amber-subtle);
       padding: 2px 6px;
       border-radius: 4px;
     }
 
-    .pay-sub-note {
-      font-size: 10px;
-      color: #64748b;
-      font-weight: 600;
+    .pay-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    .hours-split-row {
+    .hours-deck {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 10px;
     }
 
-    .hours-box {
-      padding: 8px 10px;
+    .hours-deck-box {
+      padding: 9px 10px;
       border-radius: 8px;
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--border-subtle);
     }
 
-    .hours-box.ot {
+    .hours-deck-box.ot {
       background: #fffbeb;
       border-color: #fef3c7;
     }
 
-    .hours-box-label {
+    .deck-label {
       font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #64748b;
-      display: block;
-    }
-
-    .hours-box-val {
-      font-size: 15px;
       font-weight: 800;
-      color: #0f172a;
-    }
-
-    .hours-box-sub {
-      font-size: 11px;
-      color: #64748b;
+      text-transform: uppercase;
+      color: var(--text-muted);
       display: block;
-      margin-top: 1px;
     }
 
-    .pay-line-items {
+    .deck-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+      display: block;
+      margin: 2px 0;
+    }
+
+    .deck-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .pay-stack {
       display: flex;
       flex-direction: column;
       gap: 5px;
       font-size: 12px;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--border-subtle);
       padding-top: 8px;
     }
 
-    .pay-line {
+    .pay-item-row {
       display: flex;
       justify-content: space-between;
       color: #334155;
     }
 
-    .pay-line.gross {
-      font-weight: 700;
+    .pay-item-row.gross {
+      font-weight: 800;
       color: #0f172a;
     }
 
-    .pay-line.deduction {
-      color: #dc2626;
-      font-weight: 600;
+    .pay-item-row.deduct {
+      color: var(--rose);
+      font-weight: 700;
     }
 
-    .pay-line.mileage {
+    .pay-item-row.mileage {
       color: #0369a1;
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    .takehome-total-box {
-      margin-top: 8px;
+    .takehome-box {
+      margin-top: 6px;
       padding-top: 8px;
-      border-top: 2px solid #e2e8f0;
+      border-top: 2px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
-    .takehome-title {
+    .takehome-name {
       font-size: 14px;
       font-weight: 800;
       color: #0f172a;
     }
 
-    .takehome-val {
-      font-size: 20px;
+    .takehome-num {
+      font-size: 22px;
       font-weight: 900;
-      color: #059669;
+      color: var(--emerald);
     }
 
-    /* Bottom Tab Bar */
-    nav.bottom-nav {
+    /* Bottom Navigation Bar */
+    nav.tab-nav-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: #ffffff;
-      border-top: 1px solid #e2e8f0;
       height: 60px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-around;
-      z-index: 50;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+      z-index: 60;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
     }
 
-    .nav-btn {
+    .tab-item-btn {
       background: none;
       border: none;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      color: #64748b;
-      cursor: pointer;
+      color: var(--text-muted);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       font-family: inherit;
-      padding: 6px 16px;
-      transition: color 0.15s;
+      cursor: pointer;
+      padding: 6px 14px;
+      min-height: 44px;
+      min-width: 65px;
+      justify-content: center;
     }
 
-    .nav-btn svg {
+    .tab-item-btn svg {
       width: 20px;
       height: 20px;
-      fill: currentColor;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .nav-btn.active {
-      color: var(--brand);
+    .tab-item-btn.active {
+      color: var(--primary);
     }
 
-    /* Modal Styling */
-    .modal-overlay {
+    /* Dispatch Modal */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.6);
       backdrop-filter: blur(2px);
-      z-index: 60;
+      z-index: 100;
       display: none;
       align-items: flex-end;
       justify-content: center;
-      padding: 10px;
+      padding: 12px;
     }
 
-    .modal-overlay.open {
+    .modal-backdrop.open {
       display: flex;
     }
 
-    .modal-sheet {
+    .modal-container {
       background: #ffffff;
       width: 100%;
-      max-width: 520px;
+      max-width: 550px;
       border-radius: 18px;
       padding: 16px;
       max-height: 90vh;
@@ -609,135 +627,151 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
-      animation: slideUp 0.2s ease-out;
+      box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.25);
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .modal-header {
+    .modal-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 8px;
     }
 
-    .modal-title {
+    .modal-heading {
       font-size: 15px;
       font-weight: 800;
-      color: #0f172a;
     }
 
-    .modal-subtitle {
+    .modal-subheading {
       font-size: 11px;
-      color: #64748b;
+      color: var(--text-muted);
     }
 
     .btn-close-modal {
       background: #f1f5f9;
       border: none;
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      font-weight: bold;
+      font-weight: 800;
+      font-size: 16px;
       cursor: pointer;
-      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .report-textarea {
+    .preview-textarea {
       width: 100%;
+      height: 180px;
       background: #f8fafc;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border-color);
       border-radius: 10px;
       padding: 10px;
-      font-family: monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
       line-height: 1.5;
       color: #0f172a;
       resize: none;
-      height: 170px;
       outline: none;
     }
 
-    .dispatch-grid {
+    .dispatch-btn-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
 
-    .btn-dispatch {
-      padding: 12px 10px;
+    .btn-dispatch-channel {
+      min-height: 46px;
       border-radius: 10px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       border: none;
       cursor: pointer;
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      color: #ffffff;
-      transition: opacity 0.15s;
+      text-decoration: none;
     }
 
-    .btn-dispatch:active {
+    .btn-dispatch-channel:active {
       transform: scale(0.98);
     }
 
-    .btn-sms { background: #0284c7; }
-    .btn-whatsapp { background: #10b981; }
-    .btn-email { background: #334155; }
-    .btn-copy { background: #64748b; }
+    .btn-channel-sms { background: #0284c7; }
+    .btn-channel-wa { background: #10b981; }
+    .btn-channel-copy { background: #475569; }
+    .btn-channel-email { background: #1e293b; }
 
-    /* History and Settings Tab */
-    .history-card-item {
-      background: #ffffff;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .history-info-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .history-info-meta {
-      font-size: 11px;
-      color: #64748b;
-      margin-top: 2px;
-    }
-
-    .settings-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .settings-row {
+    /* Settings & Archive Styles */
+    .field-group {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      margin-bottom: 12px;
     }
 
-    .settings-label {
+    .field-label {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       color: #334155;
     }
 
-    .settings-helper {
-      font-size: 10px;
-      color: #64748b;
+    .field-help {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .settings-input {
+      font-family: inherit;
+      font-size: 16px;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: #f8fafc;
+      outline: none;
+    }
+
+    .settings-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .history-entry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .history-entry-title {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .history-entry-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-small-open {
+      background: var(--primary-subtle);
+      color: #0369a1;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
     }
 
     /* Toast Notification */
@@ -751,15 +785,15 @@
       padding: 8px 16px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 700;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      z-index: 70;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      z-index: 120;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
 
-    #toastNotice.visible {
+    #toastNotice.active {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
@@ -767,781 +801,1022 @@
 </head>
 <body>
 
+  <!-- Top Navigation Header -->
   <header>
-    <div class="header-inner">
-      <div class="logo-group">
-        <div class="logo-badge">S</div>
+    <div class="header-content">
+      <div class="brand-wrap">
+        <div class="brand-avatar">S</div>
         <div>
-          <div class="app-title">Sam's Timesheet <span class="pill-pro">PRO</span></div>
-          <div class="app-subtitle">UK Shift & Pay Tracker</div>
+          <div class="app-name">Sam's Timesheet <span class="pro-pill">PRO</span></div>
+          <div class="app-desc">Shift Logger &amp; UK Pay Calculator</div>
         </div>
       </div>
-      <div class="save-indicator">
-        <span class="pulse-dot"></span> Saved
+      <div class="save-badge">
+        <span class="dot"></span> Saved
       </div>
     </div>
   </header>
 
-  <div id="toastNotice">Saved</div>
+  <!-- Instant Toast Notice -->
+  <div id="toastNotice">Saved to device</div>
 
+  <!-- Main Container -->
   <main>
-    <div id="tabTimesheet" class="tab-view active">
+    <!-- TAB 1: TIMESHEET -->
+    <div id="viewTimesheet" class="tab-section active">
 
-      <!-- Week Navigation -->
-      <div class="week-nav-bar">
-        <button class="btn-nav-arrow" onclick="navWeek(-1)" aria-label="Previous week">&lt;</button>
-        <div class="week-nav-center">
-          <div class="week-sublabel">
-            <span>Week Commencing</span>
-            <span id="badgeWeekStatus" class="status-badge draft">Draft</span>
+      <!-- Week Commencing Navigation Bar -->
+      <div class="nav-bar">
+        <button class="btn-nav" id="btnPrevWeek" type="button" aria-label="Previous week">&lt;</button>
+        <div class="week-center">
+          <div class="week-meta-row">
+            <span class="week-caption">Week Commencing</span>
+            <span id="labelWeekStatus" class="status-tag draft">Draft</span>
           </div>
-          <div class="date-row">
-            <input type="date" id="inputWeekCommencing" class="week-date-input" onchange="onWeekDateChanged(this.value)">
-            <button class="today-btn" onclick="jumpToCurrentWeek()">This Week</button>
+          <div class="week-picker-row">
+            <input type="date" id="inputWeekDate" class="date-picker-input">
+            <button class="btn-quick-today" id="btnCurrentWeek" type="button">This Week</button>
           </div>
         </div>
-        <button class="btn-nav-arrow" onclick="navWeek(1)" aria-label="Next week">&gt;</button>
+        <button class="btn-nav" id="btnNextWeek" type="button" aria-label="Next week">&gt;</button>
       </div>
 
-      <!-- Days shift entries -->
-      <div class="card days-table-card">
-        <div class="input-labels-row">
+      <!-- Static HTML Days Sheet (guarantees inputs will never fail to render) -->
+      <div class="card sheet-card">
+        <div class="sheet-header-cols">
           <div>Site / Location</div>
           <div style="text-align: center;">Start</div>
           <div style="text-align: center;">Finish</div>
           <div style="text-align: center;">Miles</div>
         </div>
-        <div id="daysContainer">
-          <!-- Dynamically populated rows for Monday through Sunday -->
-        </div>
-      </div>
 
-      <!-- Action Buttons -->
-      <div class="actions-grid">
-        <button class="btn-main btn-send" onclick="openDispatchModal()">
-          <span>Send To Office</span>
-        </button>
-        <button id="btnLockWeek" class="btn-main btn-lock unlocked" onclick="toggleWeekSubmission()">
-          <span id="btnLockText">Mark Submitted</span>
-        </button>
-      </div>
-
-      <!-- Private Pay Estimation Card -->
-      <div class="card pay-card">
-        <div class="pay-card-header">
-          <div>
-            <div class="pay-card-title">
-              Estimated Personal Pay
-              <span class="private-tag">Private</span>
+        <div id="daysSheetList">
+          <!-- Day 0: Monday -->
+          <div class="day-block" data-day-index="0">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Monday</span>
+                <span class="day-date-txt" id="dateTag_0">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_0">0.0h</span>
             </div>
-            <div class="pay-sub-note">For your own reference only • Never sent to office</div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_0" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_0">
+              <input type="time" class="cell-input input-center" id="end_0">
+              <input type="number" class="cell-input input-center" id="miles_0" placeholder="0" min="0" step="1">
+            </div>
           </div>
-          <div style="font-size: 10px; color: #64748b; font-weight: 700;">UK PAYE &amp; NI</div>
-        </div>
 
-        <div class="hours-split-row">
-          <div class="hours-box">
-            <span class="hours-box-label">Standard Hours</span>
-            <span class="hours-box-val" id="dispStdHours">0.00 hrs</span>
-            <span class="hours-box-sub" id="dispStdRateSub">@ £12.50 = £0.00</span>
+          <!-- Day 1: Tuesday -->
+          <div class="day-block" data-day-index="1">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Tuesday</span>
+                <span class="day-date-txt" id="dateTag_1">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_1">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_1" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_1">
+              <input type="time" class="cell-input input-center" id="end_1">
+              <input type="number" class="cell-input input-center" id="miles_1" placeholder="0" min="0" step="1">
+            </div>
           </div>
-          <div class="hours-box ot">
-            <span class="hours-box-label" style="color: #92400e;">Overtime Hours (&gt; 9h)</span>
-            <span class="hours-box-val" id="dispOtHours" style="color: #92400e;">0.00 hrs</span>
-            <span class="hours-box-sub" id="dispOtRateSub" style="color: #b45309;">@ £18.75 = £0.00</span>
-          </div>
-        </div>
 
-        <div class="pay-line-items">
-          <div class="pay-line gross">
-            <span>Total Gross Pay (Taxable)</span>
-            <span id="dispGrossPay">£0.00</span>
+          <!-- Day 2: Wednesday -->
+          <div class="day-block" data-day-index="2">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Wednesday</span>
+                <span class="day-date-txt" id="dateTag_2">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_2">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_2" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_2">
+              <input type="time" class="cell-input input-center" id="end_2">
+              <input type="number" class="cell-input input-center" id="miles_2" placeholder="0" min="0" step="1">
+            </div>
           </div>
-          <div class="pay-line deduction">
-            <span>Est. UK Income Tax (20% PAYE)</span>
-            <span id="dispIncomeTax">-£0.00</span>
-          </div>
-          <div class="pay-line deduction">
-            <span>Est. National Insurance (Class 1 @ 8%)</span>
-            <span id="dispNationalInsurance">-£0.00</span>
-          </div>
-          <div class="pay-line mileage">
-            <span>Mileage Reimbursement (Tax-Free)</span>
-            <span id="dispMileagePay">+£0.00 (0 mi)</span>
-          </div>
-        </div>
 
-        <div class="takehome-total-box">
-          <div>
-            <div class="takehome-title">Take-Home Pay</div>
-            <div style="font-size: 10px; color: #64748b;">Estimated net pay including mileage</div>
+          <!-- Day 3: Thursday -->
+          <div class="day-block" data-day-index="3">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Thursday</span>
+                <span class="day-date-txt" id="dateTag_3">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_3">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_3" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_3">
+              <input type="time" class="cell-input input-center" id="end_3">
+              <input type="number" class="cell-input input-center" id="miles_3" placeholder="0" min="0" step="1">
+            </div>
           </div>
-          <div class="takehome-val" id="dispTakeHomePay">£0.00</div>
+
+          <!-- Day 4: Friday -->
+          <div class="day-block" data-day-index="4">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Friday</span>
+                <span class="day-date-txt" id="dateTag_4">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_4">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_4" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_4">
+              <input type="time" class="cell-input input-center" id="end_4">
+              <input type="number" class="cell-input input-center" id="miles_4" placeholder="0" min="0" step="1">
+            </div>
+          </div>
+
+          <!-- Day 5: Saturday -->
+          <div class="day-block" data-day-index="5">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Saturday</span>
+                <span class="day-date-txt" id="dateTag_5">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_5">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_5" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_5">
+              <input type="time" class="cell-input input-center" id="end_5">
+              <input type="number" class="cell-input input-center" id="miles_5" placeholder="0" min="0" step="1">
+            </div>
+          </div>
+
+          <!-- Day 6: Sunday -->
+          <div class="day-block" data-day-index="6">
+            <div class="day-top-row">
+              <div class="day-title-group">
+                <span class="day-name-txt">Sunday</span>
+                <span class="day-date-txt" id="dateTag_6">-</span>
+              </div>
+              <span class="day-calc-badge" id="calcBadge_6">0.0h</span>
+            </div>
+            <div class="day-inputs-grid">
+              <input type="text" class="cell-input" id="site_6" placeholder="Site location" autocorrect="off">
+              <input type="time" class="cell-input input-center" id="start_6">
+              <input type="time" class="cell-input input-center" id="end_6">
+              <input type="number" class="cell-input input-center" id="miles_6" placeholder="0" min="0" step="1">
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Action Buttons Row -->
+      <div class="action-row">
+        <button class="btn-action btn-send-office" id="btnOpenDispatch" type="button">
+          Send To Office
+        </button>
+        <button class="btn-action btn-status-toggle" id="btnToggleSubmit" type="button">
+          <span id="txtSubmitToggle">Mark Submitted</span>
+        </button>
+      </div>
+
+      <!-- Private Personal Pay Estimation Card (STRICTLY PRIVATE) -->
+      <div class="card pay-card">
+        <div class="pay-card-top">
+          <div>
+            <div class="pay-title">
+              Estimated Personal Pay
+              <span class="private-badge">Private</span>
+            </div>
+            <div class="pay-note">For your reference only • Never sent to the office</div>
+          </div>
+          <div style="font-size: 10px; font-weight: 800; color: #64748b;">UK PAYE &amp; NI</div>
+        </div>
+
+        <div class="hours-deck">
+          <div class="hours-deck-box">
+            <span class="deck-label">Standard Hours</span>
+            <span class="deck-val" id="dispStdHrs">0.00 hrs</span>
+            <span class="deck-sub" id="dispStdSub">@ £12.50 = £0.00</span>
+          </div>
+          <div class="hours-deck-box ot">
+            <span class="deck-label" style="color: #92400e;">Overtime Hours (&gt; 9h)</span>
+            <span class="deck-val" id="dispOtHrs" style="color: #92400e;">0.00 hrs</span>
+            <span class="deck-sub" id="dispOtSub" style="color: #b45309;">@ £18.75 = £0.00</span>
+          </div>
+        </div>
+
+        <div class="pay-stack">
+          <div class="pay-item-row gross">
+            <span>Total Gross Pay (Taxable)</span>
+            <span id="dispGross">£0.00</span>
+          </div>
+          <div class="pay-item-row deduct">
+            <span>Est. UK Income Tax (20% PAYE)</span>
+            <span id="dispTax">-£0.00</span>
+          </div>
+          <div class="pay-item-row deduct">
+            <span>Est. National Insurance (Class 1 @ 8%)</span>
+            <span id="dispNI">-£0.00</span>
+          </div>
+          <div class="pay-item-row mileage">
+            <span>Mileage Reimbursement (Tax-Free)</span>
+            <span id="dispMileage">+£0.00 (0 mi)</span>
+          </div>
+        </div>
+
+        <div class="takehome-box">
+          <div>
+            <div class="takehome-name">Take-Home Pay</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Estimated net pay including tax-free mileage</div>
+          </div>
+          <div class="takehome-num" id="dispTakeHome">£0.00</div>
+        </div>
+      </div>
     </div>
 
-    <!-- History Tab View -->
-    <div id="tabHistory" class="tab-view">
+    <!-- TAB 2: ARCHIVE HISTORY -->
+    <div id="viewHistory" class="tab-section">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-          <h2 style="font-size: 14px; font-weight: 800;">Timesheet Archives</h2>
-          <span id="historyCountBadge" style="font-size: 11px; font-weight: 700; color: #0284c7;">0 weeks</span>
+          <h2 style="font-size: 15px; font-weight: 800;">Timesheet Archives</h2>
+          <span id="historyCountTag" style="font-size: 11px; font-weight: 800; color: #0284c7;">0 weeks</span>
         </div>
-        <p style="font-size: 11px; color: #64748b; margin-bottom: 12px;">All timesheets are stored permanently on this device. Tap "Open" to review or re-send.</p>
-        <div id="historyListContainer">
-          <!-- Populated by JS -->
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          All previous weeks are saved safely in your device storage.
+        </p>
+        <div id="historyEntriesList">
+          <!-- Populated by JavaScript -->
         </div>
       </div>
     </div>
 
-    <!-- Settings Tab View -->
-    <div id="tabSettings" class="tab-view">
-      <div class="card settings-group">
-        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">Pay Rates & Overtime Rules</h2>
+    <!-- TAB 3: SETTINGS -->
+    <div id="viewSettings" class="tab-section">
+      <div class="card">
+        <h2 style="font-size: 15px; font-weight: 800; margin-bottom: 12px;">Hourly Rates &amp; Rules</h2>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div class="settings-row">
-            <label class="settings-label">Standard Rate (£)</label>
-            <input type="number" id="cfgHourlyRate" step="0.01" class="input-field" onchange="saveSettings()">
-          </div>
-          <div class="settings-row">
-            <label class="settings-label">Overtime Rate (£)</label>
-            <input type="number" id="cfgOtRate" step="0.01" class="input-field" onchange="saveSettings()">
-          </div>
+        <div class="field-group">
+          <label class="field-label" for="settingStdRate">Standard Hourly Rate (£)</label>
+          <input type="number" step="0.01" class="settings-input" id="settingStdRate" value="12.50">
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div class="settings-row">
-            <label class="settings-label">Overtime Kicks in After</label>
-            <input type="number" id="cfgMaxStdHours" step="0.5" class="input-field" onchange="saveSettings()">
-            <span class="settings-helper">Standard limit (Default: 9.0 hrs)</span>
-          </div>
-          <div class="settings-row">
-            <label class="settings-label">Mileage Rate (£/mile)</label>
-            <input type="number" id="cfgMileageRate" step="0.01" class="input-field" onchange="saveSettings()">
-            <span class="settings-helper">HMRC rate: £0.45/mile</span>
-          </div>
+        <div class="field-group">
+          <label class="field-label" for="settingOtRate">Overtime Hourly Rate (£)</label>
+          <input type="number" step="0.01" class="settings-input" id="settingOtRate" value="18.75">
         </div>
 
-        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-top: 8px;">Office Contact Details</h2>
-
-        <div class="settings-row">
-          <label class="settings-label">Office Phone Number (For SMS / WhatsApp)</label>
-          <input type="tel" id="cfgOfficePhone" placeholder="e.g. 07123456789" class="input-field" onchange="saveSettings()">
-          <span class="settings-helper">Pre-fills recipient in messaging apps</span>
+        <div class="field-group">
+          <label class="field-label" for="settingOtCap">Overtime Kicks In After (Hours/Day)</label>
+          <input type="number" step="0.5" class="settings-input" id="settingOtCap" value="9.0">
+          <span class="field-help">Default 9.0h. Shifts longer than this count the excess as Overtime. No lunch deductions.</span>
         </div>
 
-        <div class="settings-row">
-          <label class="settings-label">Office Email Address (Optional)</label>
-          <input type="email" id="cfgOfficeEmail" placeholder="e.g. timesheets@yourcompany.co.uk" class="input-field" onchange="saveSettings()">
+        <div class="field-group">
+          <label class="field-label" for="settingMileageRate">Mileage Reimbursement Rate (£/mile)</label>
+          <input type="number" step="0.01" class="settings-input" id="settingMileageRate" value="0.45">
+          <span class="field-help">HMRC standard approved amount is 45p/mile (tax-free).</span>
         </div>
 
-        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-top: 8px;">Backup & Data Protection</h2>
-        <p style="font-size: 11px; color: #64748b;">Prevent data loss if you ever clear your browser cache or change phones.</p>
+        <button class="btn-action btn-send-office" id="btnSaveSettings" type="button" style="width: 100%; margin-top: 8px;">
+          Save Settings
+        </button>
+      </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
-          <button class="btn-main" style="background: #f1f5f9; color: #334155; font-size: 12px; padding: 10px;" onclick="exportBackupData()">
+      <div class="card">
+        <h2 style="font-size: 15px; font-weight: 800; margin-bottom: 8px;">Data &amp; Backup</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Export your complete timesheet history to a JSON file on your iCloud or device files.
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-action btn-channel-copy" id="btnExportBackup" type="button" style="flex: 1;">
             Export Backup (.json)
           </button>
-          <label class="btn-main" style="background: #f1f5f9; color: #334155; font-size: 12px; padding: 10px; cursor: pointer; text-align: center;">
-            Restore Backup
-            <input type="file" id="fileImportBackup" accept=".json" onchange="importBackupData(event)" style="display: none;">
-          </label>
+          <button class="btn-action btn-channel-email" id="btnClearCurrentWeek" type="button" style="flex: 1; background: #991b1b;">
+            Clear Active Week
+          </button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Office Dispatch Modal -->
-  <div id="modalDispatch" class="modal-overlay" onclick="closeDispatchModal(event)">
-    <div class="modal-sheet" onclick="event.stopPropagation()">
-      <div class="modal-header">
+  <!-- Bottom Navigation Tab Bar -->
+  <nav class="tab-nav-bar">
+    <button class="tab-item-btn active" id="tabBtnTimesheet" type="button">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      <span>Timesheet</span>
+    </button>
+    <button class="tab-item-btn" id="tabBtnHistory" type="button">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>History</span>
+    </button>
+    <button class="tab-item-btn" id="tabBtnSettings" type="button">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Office Dispatch Modal (STRICTLY EXCLUDES ANY PAY OR £ FIGURES) -->
+  <div class="modal-backdrop" id="modalDispatch">
+    <div class="modal-container">
+      <div class="modal-header-row">
         <div>
-          <div class="modal-title">Send Timesheet to Office</div>
-          <div class="modal-subtitle">Hours, sites, and mileage only (NO pay numbers)</div>
+          <div class="modal-heading">Send Report To Office</div>
+          <div class="modal-subheading">Timesheet &amp; mileage summary (NO financial figures)</div>
         </div>
-        <button class="btn-close-modal" onclick="closeDispatchModal()">&times;</button>
+        <button class="btn-close-modal" id="btnCloseModal" type="button">&times;</button>
       </div>
 
-      <textarea id="reportOfficeText" class="report-textarea" readonly></textarea>
+      <textarea class="preview-textarea" id="txtReportPreview" readonly></textarea>
 
-      <div class="dispatch-grid">
-        <button class="btn-dispatch btn-sms" onclick="executeDispatch('sms')">SMS Text</button>
-        <button class="btn-dispatch btn-whatsapp" onclick="executeDispatch('whatsapp')">WhatsApp</button>
-        <button class="btn-dispatch btn-email" onclick="executeDispatch('email')">Email</button>
-        <button class="btn-dispatch btn-copy" onclick="executeDispatch('copy')">Copy Message</button>
+      <div class="dispatch-btn-grid">
+        <a class="btn-dispatch-channel btn-channel-sms" id="btnDispatchSms" href="#">
+          Send SMS / Text
+        </a>
+        <a class="btn-dispatch-channel btn-channel-wa" id="btnDispatchWhatsApp" href="#" target="_blank">
+          WhatsApp
+        </a>
+        <button class="btn-dispatch-channel btn-channel-copy" id="btnDispatchCopy" type="button">
+          Copy Text
+        </button>
+        <a class="btn-dispatch-channel btn-channel-email" id="btnDispatchEmail" href="#">
+          Email Office
+        </a>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="navBtnTimesheet" onclick="switchTab('tabTimesheet')">
-      <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
-      Timesheet
-    </button>
-    <button class="nav-btn" id="navBtnHistory" onclick="switchTab('tabHistory')">
-      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-      History
-    </button>
-    <button class="nav-btn" id="navBtnSettings" onclick="switchTab('tabSettings')">
-      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-      Settings
-    </button>
-  </nav>
-
+  <!-- Pure Vanilla Script: Zero dependencies, fail-safe DOM bindings -->
   <script>
-    const STORAGE_KEY = "SAMS_TRACKER_DATA_PRO_V3";
-    const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    (function () {
+      "use strict";
 
-    const DEFAULT_STORE = {
-      version: 3,
-      settings: {
-        hourlyRate: 12.50,
-        otRate: 18.75,
-        maxStdHours: 9.0,
-        mileageRate: 0.45,
-        officePhone: "",
-        officeEmail: ""
-      },
-      currentWeekMonday: "",
-      weeks: {} // weekKey (YYYY-MM-DD) -> { monday, status, days: { Monday: { site, start, finish, miles } } }
-    };
+      const STORAGE_KEY = "sams_timesheet_data_v2";
+      const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    let appData = null;
-    let activeMonday = "";
+      // Safe date formatting without timezone shifts (en-GB format)
+      function toYMD(dateObj) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const d = String(dateObj.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
 
-    // UK Monday ISO calculator
-    function getMondayIso(dateObj) {
-      const d = new Date(dateObj);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      const monday = new Date(d.setDate(diff));
-      return monday.toISOString().split("T")[0];
-    }
+      function fromYMD(ymdStr) {
+        const parts = ymdStr.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0);
+      }
 
-    function createEmptyWeek(mondayIso) {
-      const days = {};
-      const base = new Date(mondayIso + "T00:00:00");
-      DAYS_OF_WEEK.forEach((dName, idx) => {
-        const cur = new Date(base);
-        cur.setDate(base.getDate() + idx);
-        days[dName] = {
-          date: cur.toISOString().split("T")[0],
-          site: "",
-          start: "",
-          finish: "",
-          miles: ""
-        };
-      });
-      return {
-        monday: mondayIso,
-        status: "draft",
-        days: days
+      // Return the Monday date string for any given Date object
+      function getMondayYMD(inputDate) {
+        const d = new Date(inputDate);
+        const day = d.getDay(); // 0 is Sunday, 1 is Monday...
+        const diff = (day === 0 ? -6 : 1) - day;
+        d.setDate(d.getDate() + diff);
+        return toYMD(d);
+      }
+
+      function formatDisplayDate(dateObj) {
+        return dateObj.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+      }
+
+      function formatFullDate(dateObj) {
+        return dateObj.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+      }
+
+      let appState = {
+        settings: {
+          stdRate: 12.50,
+          otRate: 18.75,
+          otCap: 9.0,
+          mileageRate: 0.45
+        },
+        currentWeekMonday: getMondayYMD(new Date()),
+        weeks: {}
       };
-    }
 
-    function loadData() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          appData = JSON.parse(raw);
-        }
-      } catch (err) {
-        console.error("Local data parse error", err);
-      }
-
-      if (!appData || !appData.version) {
-        appData = JSON.parse(JSON.stringify(DEFAULT_STORE));
-        appData.currentWeekMonday = getMondayIso(new Date());
-        saveData();
-      }
-
-      if (!appData.currentWeekMonday) {
-        appData.currentWeekMonday = getMondayIso(new Date());
-      }
-
-      activeMonday = appData.currentWeekMonday;
-      if (!appData.weeks[activeMonday]) {
-        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
-        saveData();
-      }
-    }
-
-    function saveData() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-        showToast("Auto-Saved");
-      } catch (e) {
-        console.error("Storage save failed", e);
-      }
-    }
-
-    function calculateShiftDuration(startStr, finishStr) {
-      if (!startStr || !finishStr) return 0;
-      const [sh, sm] = startStr.split(":").map(Number);
-      const [fh, fm] = finishStr.split(":").map(Number);
-      let s = sh + sm / 60;
-      let f = fh + fm / 60;
-      if (f < s) f += 24; // Smooth midnight crossing
-      return Math.max(0, f - s); // No lunch deduction as requested
-    }
-
-    function renderDaysView() {
-      const container = document.getElementById("daysContainer");
-      container.innerHTML = "";
-
-      const currentWeek = appData.weeks[activeMonday] || createEmptyWeek(activeMonday);
-      const isSubmitted = currentWeek.status === "submitted";
-
-      DAYS_OF_WEEK.forEach((dayName, idx) => {
-        const dayData = currentWeek.days[dayName] || { site: "", start: "", finish: "", miles: "" };
-        const baseDate = new Date(activeMonday + "T00:00:00");
-        baseDate.setDate(baseDate.getDate() + idx);
-        const ukDateStr = baseDate.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
-
-        const row = document.createElement("div");
-        row.className = "day-row";
-        row.innerHTML = `
-          <div class="day-row-header">
-            <div class="day-title-grp">
-              <span class="day-name">${dayName}</span>
-              <span class="day-date-tag">${ukDateStr}</span>
-            </div>
-            <div id="badge-${dayName}" class="day-summary-badge">Off</div>
-          </div>
-          <div class="inputs-grid">
-            <input type="text" placeholder="Site / Job" value="${escapeHtml(dayData.site)}" 
-                   ${isSubmitted ? "disabled" : ""} 
-                   oninput="onInputUpdate('${dayName}', 'site', this.value)" class="input-field">
-            <input type="time" value="${dayData.start}" 
-                   ${isSubmitted ? "disabled" : ""} 
-                   oninput="onInputUpdate('${dayName}', 'start', this.value)" class="input-field input-center">
-            <input type="time" value="${dayData.finish}" 
-                   ${isSubmitted ? "disabled" : ""} 
-                   oninput="onInputUpdate('${dayName}', 'finish', this.value)" class="input-field input-center">
-            <input type="number" placeholder="0" min="0" value="${dayData.miles}" 
-                   ${isSubmitted ? "disabled" : ""} 
-                   oninput="onInputUpdate('${dayName}', 'miles', this.value)" class="input-field input-center">
-          </div>
-        `;
-        container.appendChild(row);
-      });
-
-      document.getElementById("inputWeekCommencing").value = activeMonday;
-      updateStatusBadge(currentWeek.status);
-      recalculatePayFigures();
-    }
-
-    function escapeHtml(str) {
-      if (!str) return "";
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
-
-    function onInputUpdate(dayName, field, value) {
-      if (!appData.weeks[activeMonday]) {
-        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
-      }
-      appData.weeks[activeMonday].days[dayName][field] = value;
-      saveData();
-      recalculatePayFigures();
-    }
-
-    function onWeekDateChanged(chosenDate) {
-      if (!chosenDate) return;
-      const targetMonday = getMondayIso(chosenDate);
-      activeMonday = targetMonday;
-      appData.currentWeekMonday = targetMonday;
-      if (!appData.weeks[activeMonday]) {
-        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
-      }
-      saveData();
-      renderDaysView();
-    }
-
-    function navWeek(direction) {
-      const cur = new Date(activeMonday + "T00:00:00");
-      cur.setDate(cur.getDate() + direction * 7);
-      const targetMonday = cur.toISOString().split("T")[0];
-      activeMonday = targetMonday;
-      appData.currentWeekMonday = targetMonday;
-      if (!appData.weeks[activeMonday]) {
-        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
-      }
-      saveData();
-      renderDaysView();
-    }
-
-    function jumpToCurrentWeek() {
-      const todayMonday = getMondayIso(new Date());
-      activeMonday = todayMonday;
-      appData.currentWeekMonday = todayMonday;
-      if (!appData.weeks[activeMonday]) {
-        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
-      }
-      saveData();
-      renderDaysView();
-    }
-
-    function updateStatusBadge(status) {
-      const badge = document.getElementById("badgeWeekStatus");
-      const btnLock = document.getElementById("btnLockWeek");
-      const btnText = document.getElementById("btnLockText");
-
-      if (status === "submitted") {
-        badge.className = "status-badge submitted";
-        badge.innerText = "Submitted";
-        btnLock.className = "btn-main btn-lock submitted";
-        btnText.innerText = "Unlock Timesheet";
-      } else {
-        badge.className = "status-badge draft";
-        badge.innerText = "Draft";
-        btnLock.className = "btn-main btn-lock unlocked";
-        btnText.innerText = "Mark Submitted";
-      }
-    }
-
-    function toggleWeekSubmission() {
-      const currentWeek = appData.weeks[activeMonday];
-      if (!currentWeek) return;
-
-      if (currentWeek.status === "submitted") {
-        currentWeek.status = "draft";
-        showToast("Timesheet Unlocked");
-      } else {
-        currentWeek.status = "submitted";
-        showToast("Marked as Submitted");
-      }
-      saveData();
-      renderDaysView();
-      renderHistoryView();
-    }
-
-    function recalculatePayFigures() {
-      const currentWeek = appData.weeks[activeMonday] || createEmptyWeek(activeMonday);
-      const s = appData.settings;
-
-      let grandStdHrs = 0;
-      let grandOtHrs = 0;
-      let grandMiles = 0;
-
-      DAYS_OF_WEEK.forEach(day => {
-        const d = currentWeek.days[day];
-        const duration = calculateShiftDuration(d.start, d.finish);
-        const miles = parseFloat(d.miles) || 0;
-        grandMiles += miles;
-
-        let std = 0;
-        let ot = 0;
-        if (duration > 0) {
-          if (duration <= s.maxStdHours) {
-            std = duration;
-          } else {
-            std = s.maxStdHours;
-            ot = duration - s.maxStdHours;
-          }
-          grandStdHrs += std;
-          grandOtHrs += ot;
-        }
-
-        const badge = document.getElementById(`badge-${day}`);
-        if (badge) {
-          if (duration > 0 || miles > 0) {
-            let label = `${std.toFixed(1)}h`;
-            if (ot > 0) label += ` + ${ot.toFixed(1)}h OT`;
-            if (miles > 0) label += ` | ${miles}mi`;
-            badge.innerText = label;
-            badge.className = "day-summary-badge worked";
-          } else {
-            badge.innerText = "Off";
-            badge.className = "day-summary-badge";
-          }
-        }
-      });
-
-      const stdPay = grandStdHrs * s.hourlyRate;
-      const otPay = grandOtHrs * s.otRate;
-      const grossTaxablePay = stdPay + otPay;
-      const mileageExpense = grandMiles * s.mileageRate;
-
-      // UK PAYE Tax (Personal allowance 1257L = £12,570/yr pro-rata £241.73/wk @ 20%)
-      const weeklyTaxAllowance = 12570 / 52;
-      let incomeTax = 0;
-      if (grossTaxablePay > weeklyTaxAllowance) {
-        incomeTax = (grossTaxablePay - weeklyTaxAllowance) * 0.20;
-      }
-
-      // UK Class 1 National Insurance (£242 threshold @ 8%)
-      const weeklyNIThreshold = 242.0;
-      let niDeduction = 0;
-      if (grossTaxablePay > weeklyNIThreshold) {
-        niDeduction = (grossTaxablePay - weeklyNIThreshold) * 0.08;
-      }
-
-      // Net take-home pay + tax-free mileage reimbursement
-      const netTakeHome = grossTaxablePay - incomeTax - niDeduction + mileageExpense;
-
-      // Update UI elements
-      document.getElementById("dispStdHours").innerText = `${grandStdHrs.toFixed(2)} hrs`;
-      document.getElementById("dispStdRateSub").innerText = `@ £${s.hourlyRate.toFixed(2)} = £${stdPay.toFixed(2)}`;
-
-      document.getElementById("dispOtHours").innerText = `${grandOtHrs.toFixed(2)} hrs`;
-      document.getElementById("dispOtRateSub").innerText = `@ £${s.otRate.toFixed(2)} = £${otPay.toFixed(2)}`;
-
-      document.getElementById("dispGrossPay").innerText = `£${grossTaxablePay.toFixed(2)}`;
-      document.getElementById("dispIncomeTax").innerText = `-£${incomeTax.toFixed(2)}`;
-      document.getElementById("dispNationalInsurance").innerText = `-£${niDeduction.toFixed(2)}`;
-      document.getElementById("dispMileagePay").innerText = `+£${mileageExpense.toFixed(2)} (${grandMiles} mi)`;
-      document.getElementById("dispTakeHomePay").innerText = `£${netTakeHome.toFixed(2)}`;
-
-      return { grandStdHrs, grandOtHrs, grandMiles };
-    }
-
-    function buildOfficeReport() {
-      const currentWeek = appData.weeks[activeMonday];
-      if (!currentWeek) return "";
-      const s = appData.settings;
-      const totals = recalculatePayFigures();
-
-      const [y, m, d] = activeMonday.split("-");
-      const ukDateHeader = `${d}/${m}/${y}`;
-
-      let lines = [];
-      lines.push(`WEEKLY TIMESHEET - SAM (w/c ${ukDateHeader})`);
-      lines.push(`----------------------------------`);
-
-      let daysWorkedCount = 0;
-      DAYS_OF_WEEK.forEach((dayName, idx) => {
-        const item = currentWeek.days[dayName];
-        const duration = calculateShiftDuration(item.start, item.finish);
-        const miles = parseFloat(item.miles) || 0;
-
-        if (duration > 0 || miles > 0) {
-          daysWorkedCount++;
-          const dayDate = new Date(activeMonday + "T00:00:00");
-          dayDate.setDate(dayDate.getDate() + idx);
-          const shortDate = dayDate.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
-
-          let rowText = `${dayName} (${shortDate})`;
-          if (item.site && item.site.trim() !== "") {
-            rowText += ` [${item.site.trim()}]`;
-          }
-          if (item.start && item.finish) {
-            rowText += `: ${item.start} - ${item.finish}`;
-          }
-
-          let details = [];
-          if (duration > 0) {
-            const std = Math.min(duration, s.maxStdHours);
-            const ot = Math.max(0, duration - s.maxStdHours);
-            details.push(`${std.toFixed(2)}h Std`);
-            if (ot > 0) details.push(`${ot.toFixed(2)}h OT`);
-          }
-          if (miles > 0) {
-            details.push(`${miles} mi`);
-          }
-          if (details.length > 0) {
-            rowText += ` (${details.join(", ")})`;
-          }
-          lines.push(rowText);
-        }
-      });
-
-      if (daysWorkedCount === 0) {
-        lines.push(`No shifts logged for this week.`);
-      }
-
-      const totalHours = totals.grandStdHrs + totals.grandOtHrs;
-      lines.push(`----------------------------------`);
-      lines.push(`Total Standard Hours: ${totals.grandStdHrs.toFixed(2)}h`);
-      if (totals.grandOtHrs > 0) {
-        lines.push(`Total Overtime Hours: ${totals.grandOtHrs.toFixed(2)}h`);
-      }
-      lines.push(`Total Worked Hours: ${totalHours.toFixed(2)}h`);
-      if (totals.grandMiles > 0) {
-        lines.push(`Total Mileage: ${totals.grandMiles} miles`);
-      }
-
-      // CRITICAL: Strictly NO £ or tax figures sent to the office
-      return lines.join("\n");
-    }
-
-    function openDispatchModal() {
-      const text = buildOfficeReport();
-      document.getElementById("reportOfficeText").value = text;
-      document.getElementById("modalDispatch").classList.add("open");
-    }
-
-    function closeDispatchModal(e) {
-      document.getElementById("modalDispatch").classList.remove("open");
-    }
-
-    function executeDispatch(channel) {
-      const text = document.getElementById("reportOfficeText").value;
-      const s = appData.settings;
-      const phone = (s.officePhone || "").replace(/\s+/g, "");
-      const email = (s.officeEmail || "").trim();
-
-      if (channel === "sms") {
-        const url = phone ? `sms:${phone}?&body=${encodeURIComponent(text)}` : `sms:?&body=${encodeURIComponent(text)}`;
-        window.location.href = url;
-      } else if (channel === "whatsapp") {
-        let waPhone = phone;
-        if (waPhone.startsWith("0")) waPhone = "44" + waPhone.substring(1);
-        const url = waPhone ? `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(url, "_blank");
-      } else if (channel === "email") {
-        const [y, m, d] = activeMonday.split("-");
-        const subject = encodeURIComponent(`Weekly Timesheet - Sam (w/c ${d}/${m}/${y})`);
-        const url = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(text)}`;
-        window.location.href = url;
-      } else if (channel === "copy") {
-        const el = document.getElementById("reportOfficeText");
-        el.select();
-        el.setSelectionRange(0, 99999);
+      function loadData() {
         try {
-          document.execCommand("copy");
-          showToast("Timesheet Copied to Clipboard!");
-        } catch (e) {
-          showToast("Could not copy");
-        }
-      }
-    }
-
-    function renderHistoryView() {
-      const container = document.getElementById("historyListContainer");
-      container.innerHTML = "";
-
-      const keys = Object.keys(appData.weeks).sort().reverse();
-      document.getElementById("historyCountBadge").innerText = `${keys.length} week${keys.length === 1 ? "" : "s"}`;
-
-      if (keys.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding: 24px; color: #94a3b8; font-size: 13px;">No timesheets recorded yet.</div>`;
-        return;
-      }
-
-      keys.forEach(mondayIso => {
-        const week = appData.weeks[mondayIso];
-        let totalHrs = 0;
-        let totalMiles = 0;
-
-        DAYS_OF_WEEK.forEach(day => {
-          const item = week.days[day];
-          totalHrs += calculateShiftDuration(item.start, item.finish);
-          totalMiles += (parseFloat(item.miles) || 0);
-        });
-
-        const [y, m, d] = mondayIso.split("-");
-        const isCurrent = mondayIso === activeMonday;
-
-        const itemEl = document.createElement("div");
-        itemEl.className = "history-card-item";
-        if (isCurrent) {
-          itemEl.style.borderColor = "#0284c7";
-          itemEl.style.background = "#f0f9ff";
-        }
-
-        itemEl.innerHTML = `
-          <div>
-            <div class="history-info-title">Week Commencing ${d}/${m}/${y}</div>
-            <div class="history-info-meta">${totalHrs.toFixed(2)}h total${totalMiles > 0 ? ` • ${totalMiles} miles` : ""}</div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="status-badge ${week.status === 'submitted' ? 'submitted' : 'draft'}">
-              ${week.status === 'submitted' ? 'Submitted' : 'Draft'}
-            </span>
-            <button class="btn-main" style="padding: 6px 12px; font-size: 11px; background: #e2e8f0; color: #334155;" onclick="jumpToArchivedWeek('${mondayIso}')">
-              Open
-            </button>
-          </div>
-        `;
-        container.appendChild(itemEl);
-      });
-    }
-
-    function jumpToArchivedWeek(mondayIso) {
-      activeMonday = mondayIso;
-      appData.currentWeekMonday = mondayIso;
-      saveData();
-      switchTab("tabTimesheet");
-      renderDaysView();
-    }
-
-    function loadSettingsToForm() {
-      const s = appData.settings;
-      document.getElementById("cfgHourlyRate").value = s.hourlyRate;
-      document.getElementById("cfgOtRate").value = s.otRate;
-      document.getElementById("cfgMaxStdHours").value = s.maxStdHours;
-      document.getElementById("cfgMileageRate").value = s.mileageRate;
-      document.getElementById("cfgOfficePhone").value = s.officePhone || "";
-      document.getElementById("cfgOfficeEmail").value = s.officeEmail || "";
-    }
-
-    function saveSettings() {
-      appData.settings.hourlyRate = parseFloat(document.getElementById("cfgHourlyRate").value) || 0;
-      appData.settings.otRate = parseFloat(document.getElementById("cfgOtRate").value) || 0;
-      appData.settings.maxStdHours = parseFloat(document.getElementById("cfgMaxStdHours").value) || 9.0;
-      appData.settings.mileageRate = parseFloat(document.getElementById("cfgMileageRate").value) || 0;
-      appData.settings.officePhone = document.getElementById("cfgOfficePhone").value.trim();
-      appData.settings.officeEmail = document.getElementById("cfgOfficeEmail").value.trim();
-      saveData();
-      recalculatePayFigures();
-      showToast("Settings Updated");
-    }
-
-    function exportBackupData() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-      const a = document.createElement("a");
-      a.setAttribute("href", dataStr);
-      a.setAttribute("download", `Sams_Timesheet_Backup_${new Date().toISOString().split("T")[0]}.json`);
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast("Backup File Downloaded");
-    }
-
-    function importBackupData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          if (parsed && parsed.weeks) {
-            appData = parsed;
-            saveData();
-            renderDaysView();
-            renderHistoryView();
-            loadSettingsToForm();
-            showToast("Backup Successfully Restored!");
-          } else {
-            showToast("Invalid file format");
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              if (parsed.settings) appState.settings = Object.assign({}, appState.settings, parsed.settings);
+              if (parsed.weeks && typeof parsed.weeks === "object") appState.weeks = parsed.weeks;
+            }
           }
         } catch (err) {
-          showToast("Failed to read file");
+          console.warn("Storage load fallback:", err);
         }
-      };
-      reader.readAsText(file);
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-
-      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
-      if (tabId === "tabTimesheet") document.getElementById("navBtnTimesheet").classList.add("active");
-      if (tabId === "tabHistory") {
-        document.getElementById("navBtnHistory").classList.add("active");
-        renderHistoryView();
       }
-      if (tabId === "tabSettings") {
-        document.getElementById("navBtnSettings").classList.add("active");
-        loadSettingsToForm();
-      }
-    }
 
-    let toastTimer;
-    function showToast(msg) {
-      const t = document.getElementById("toastNotice");
+      function saveData() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+          showToast("Saved");
+        } catch (err) {
+          console.error("Storage save failed:", err);
+        }
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toastNotice");
+        if (t) {
+          t.innerText = msg;
+          t.classList.add("active");
+          clearTimeout(t._timer);
+          t._timer = setTimeout(() => t.classList.remove("active"), 1200);
+        }
+      }
+
+      function getOrCreateWeek(mondayYMD) {
+        if (!appState.weeks[mondayYMD]) {
+          const daysArray = [];
+          for (let i = 0; i < 7; i++) {
+            daysArray.push({ site: "", start: "", end: "", miles: 0 });
+          }
+          appState.weeks[mondayYMD] = {
+            submitted: false,
+            days: daysArray
+          };
+        }
+        return appState.weeks[mondayYMD];
+      }
+
+      // Duration in decimal hours without lunch deduction
+      function calculateShiftHours(startStr, endStr) {
+        if (!startStr || !endStr) return 0;
+        const [sh, sm] = startStr.split(":").map(Number);
+        const [eh, em] = endStr.split(":").map(Number);
+        if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) return 0;
+
+        let startDec = sh + (sm / 60);
+        let endDec = eh + (em / 60);
+
+        // Handles night shifts across midnight
+        if (endDec < startDec) {
+          endDec += 24;
+        }
+
+        return Math.max(0, endDec - startDec);
+      }
+
+      function renderTimesheet() {
+        const mondayYMD = appState.currentWeekMonday;
+        const week = getOrCreateWeek(mondayYMD);
+        const baseMonday = fromYMD(mondayYMD);
+
+        // Update Week Navigation Header
+        const datePicker = document.getElementById("inputWeekDate");
+        if (datePicker) datePicker.value = mondayYMD;
+
+        const badge = document.getElementById("labelWeekStatus");
+        const btnToggle = document.getElementById("btnToggleSubmit");
+        const txtToggle = document.getElementById("txtSubmitToggle");
+
+        if (week.submitted) {
+          if (badge) {
+            badge.innerText = "Submitted";
+            badge.className = "status-tag submitted";
+          }
+          if (btnToggle) {
+            btnToggle.className = "btn-action btn-status-toggle submitted";
+          }
+          if (txtToggle) txtToggle.innerText = "Unlock Week";
+        } else {
+          if (badge) {
+            badge.innerText = "Draft";
+            badge.className = "status-tag draft";
+          }
+          if (btnToggle) {
+            btnToggle.className = "btn-action btn-status-toggle";
+          }
+          if (txtToggle) txtToggle.innerText = "Mark Submitted";
+        }
+
+        const isLocked = week.submitted;
+        const otCap = parseFloat(appState.settings.otCap) || 9.0;
+        const stdRate = parseFloat(appState.settings.stdRate) || 12.50;
+        const otRate = parseFloat(appState.settings.otRate) || 18.75;
+        const mileageRate = parseFloat(appState.settings.mileageRate) || 0.45;
+
+        let totalStdHours = 0;
+        let totalOtHours = 0;
+        let totalMiles = 0;
+
+        // Render each day row
+        for (let i = 0; i < 7; i++) {
+          const currentDayDate = new Date(baseMonday);
+          currentDayDate.setDate(baseMonday.getDate() + i);
+
+          const dateTag = document.getElementById(`dateTag_${i}`);
+          if (dateTag) dateTag.innerText = formatDisplayDate(currentDayDate);
+
+          const dayData = week.days[i] || { site: "", start: "", end: "", miles: 0 };
+
+          const siteInput = document.getElementById(`site_${i}`);
+          const startInput = document.getElementById(`start_${i}`);
+          const endInput = document.getElementById(`end_${i}`);
+          const milesInput = document.getElementById(`miles_${i}`);
+          const badgeCalc = document.getElementById(`calcBadge_${i}`);
+
+          if (siteInput) {
+            siteInput.value = dayData.site || "";
+            siteInput.disabled = isLocked;
+          }
+          if (startInput) {
+            startInput.value = dayData.start || "";
+            startInput.disabled = isLocked;
+          }
+          if (endInput) {
+            endInput.value = dayData.end || "";
+            endInput.disabled = isLocked;
+          }
+          if (milesInput) {
+            milesInput.value = (dayData.miles > 0) ? dayData.miles : "";
+            milesInput.disabled = isLocked;
+          }
+
+          const dailyDuration = calculateShiftHours(dayData.start, dayData.end);
+          let dayStd = 0;
+          let dayOt = 0;
+
+          if (dailyDuration > 0) {
+            if (dailyDuration <= otCap) {
+              dayStd = dailyDuration;
+            } else {
+              dayStd = otCap;
+              dayOt = dailyDuration - otCap;
+            }
+          }
+
+          totalStdHours += dayStd;
+          totalOtHours += dayOt;
+          totalMiles += parseFloat(dayData.miles) || 0;
+
+          if (badgeCalc) {
+            if (dailyDuration > 0) {
+              badgeCalc.className = "day-calc-badge active";
+              badgeCalc.innerText = `${dailyDuration.toFixed(1)}h` + (dayOt > 0 ? ` (${dayOt.toFixed(1)}h OT)` : "");
+            } else {
+              badgeCalc.className = "day-calc-badge";
+              badgeCalc.innerText = "0.0h";
+            }
+          }
+        }
+
+        // Private Pay Calculations (UK PAYE & NI Weekly)
+        const stdGross = totalStdHours * stdRate;
+        const otGross = totalOtHours * otRate;
+        const totalGross = stdGross + otGross;
+
+        // Weekly UK Tax allowance: £12,570 / 52 = £241.73
+        const weeklyTaxThreshold = 12570 / 52;
+        let incomeTax = 0;
+        if (totalGross > weeklyTaxThreshold) {
+          incomeTax = (totalGross - weeklyTaxThreshold) * 0.20;
+        }
+
+        // Class 1 NI Threshold: £242 / week @ 8%
+        const weeklyNIThreshold = 242;
+        let nationalInsurance = 0;
+        if (totalGross > weeklyNIThreshold) {
+          nationalInsurance = (totalGross - weeklyNIThreshold) * 0.08;
+        }
+
+        // Mileage is tax-free under HMRC rules
+        const mileagePay = totalMiles * mileageRate;
+        const takeHomePay = Math.max(0, (totalGross - incomeTax - nationalInsurance)) + mileagePay;
+
+        // Update Personal Pay Breakdown Card
+        const elStdHrs = document.getElementById("dispStdHrs");
+        const elStdSub = document.getElementById("dispStdSub");
+        const elOtHrs = document.getElementById("dispOtHrs");
+        const elOtSub = document.getElementById("dispOtSub");
+        const elGross = document.getElementById("dispGross");
+        const elTax = document.getElementById("dispTax");
+        const elNI = document.getElementById("dispNI");
+        const elMileage = document.getElementById("dispMileage");
+        const elTakeHome = document.getElementById("dispTakeHome");
+
+        if (elStdHrs) elStdHrs.innerText = `${totalStdHours.toFixed(2)} hrs`;
+        if (elStdSub) elStdSub.innerText = `@ £${stdRate.toFixed(2)} = £${stdGross.toFixed(2)}`;
+        if (elOtHrs) elOtHrs.innerText = `${totalOtHours.toFixed(2)} hrs`;
+        if (elOtSub) elOtSub.innerText = `@ £${otRate.toFixed(2)} = £${otGross.toFixed(2)}`;
+        if (elGross) elGross.innerText = `£${totalGross.toFixed(2)}`;
+        if (elTax) elTax.innerText = `-£${incomeTax.toFixed(2)}`;
+        if (elNI) elNI.innerText = `-£${nationalInsurance.toFixed(2)}`;
+        if (elMileage) elMileage.innerText = `+£${mileagePay.toFixed(2)} (${totalMiles} mi)`;
+        if (elTakeHome) elTakeHome.innerText = `£${takeHomePay.toFixed(2)}`;
+      }
+
+      function buildOfficeReport() {
+        const mondayYMD = appState.currentWeekMonday;
+        const week = getOrCreateWeek(mondayYMD);
+        const baseMonday = fromYMD(mondayYMD);
+        const otCap = parseFloat(appState.settings.otCap) || 9.0;
+
+        let report = `WEEKLY TIMESHEET - SAM\n`;
+        report += `Week Commencing: ${formatFullDate(baseMonday)}\n`;
+        report += `------------------------------------\n`;
+
+        let totalStd = 0;
+        let totalOt = 0;
+        let grandMiles = 0;
+        let activeDaysLogged = 0;
+
+        for (let i = 0; i < 7; i++) {
+          const currentDayDate = new Date(baseMonday);
+          currentDayDate.setDate(baseMonday.getDate() + i);
+          const dayName = DAY_NAMES[i];
+          const dayFormatted = formatDisplayDate(currentDayDate);
+
+          const dayData = week.days[i] || { site: "", start: "", end: "", miles: 0 };
+          const site = (dayData.site || "").trim();
+          const start = dayData.start || "";
+          const end = dayData.end || "";
+          const miles = parseFloat(dayData.miles) || 0;
+
+          const duration = calculateShiftHours(start, end);
+
+          if (duration > 0 || miles > 0 || site.length > 0) {
+            activeDaysLogged++;
+            let std = 0;
+            let ot = 0;
+
+            if (duration > 0) {
+              if (duration <= otCap) {
+                std = duration;
+              } else {
+                std = otCap;
+                ot = duration - otCap;
+              }
+            }
+
+            totalStd += std;
+            totalOt += ot;
+            grandMiles += miles;
+
+            const sitePrefix = site ? ` [${site}]` : "";
+
+            if (duration > 0) {
+              let shiftDetails = `${std.toFixed(2)}h Std`;
+              if (ot > 0) shiftDetails += `, ${ot.toFixed(2)}h OT`;
+              if (miles > 0) shiftDetails += `, ${miles} mi`;
+
+              report += `${dayName} (${dayFormatted})${sitePrefix}: ${start} - ${end} (${shiftDetails})\n`;
+            } else if (miles > 0) {
+              report += `${dayName} (${dayFormatted})${sitePrefix}: ${miles} miles\n`;
+            } else {
+              report += `${dayName} (${dayFormatted})${sitePrefix}: On Site\n`;
+            }
+          }
+        }
+
+        if (activeDaysLogged === 0) {
+          report += `No shifts logged for this week.\n`;
+        }
+
+        const totalHours = totalStd + totalOt;
+
+        report += `------------------------------------\n`;
+        report += `Total Standard Hours: ${totalStd.toFixed(2)}h\n`;
+        if (totalOt > 0) {
+          report += `Total Overtime Hours: ${totalOt.toFixed(2)}h\n`;
+        }
+        report += `Total Hours Worked: ${totalHours.toFixed(2)}h\n`;
+        if (grandMiles > 0) {
+          report += `Total Mileage: ${grandMiles} miles\n`;
+        }
+        report += `------------------------------------`;
+
+        return report;
+      }
+
+      function openDispatchModal() {
+        const text = buildOfficeReport();
+        const preview = document.getElementById("txtReportPreview");
+        if (preview) preview.value = text;
+
+        const encoded = encodeURIComponent(text);
+
+        // SMS: Uses standard URI scheme compatible with iOS & Android
+        const btnSms = document.getElementById("btnDispatchSms");
+        if (btnSms) btnSms.href = `sms:?&body=${encoded}`;
+
+        // WhatsApp
+        const btnWA = document.getElementById("btnDispatchWhatsApp");
+        if (btnWA) btnWA.href = `https://api.whatsapp.com/send?text=${encoded}`;
+
+        // Email
+        const baseMonday = fromYMD(appState.currentWeekMonday);
+        const subject = encodeURIComponent(`Timesheet - Sam (w/c ${formatFullDate(baseMonday)})`);
+        const btnEmail = document.getElementById("btnDispatchEmail");
+        if (btnEmail) btnEmail.href = `mailto:?subject=${subject}&body=${encoded}`;
+
+        const modal = document.getElementById("modalDispatch");
+        if (modal) modal.classList.add("open");
+      }
+
+      function closeDispatchModal() {
+        const modal = document.getElementById("modalDispatch");
+        if (modal) modal.classList.remove("open");
+      }
+
+      function renderHistory() {
+        const list = document.getElementById("historyEntriesList");
+        const countTag = document.getElementById("historyCountTag");
+        if (!list) return;
+
+        list.innerHTML = "";
+        const weekKeys = Object.keys(appState.weeks).sort().reverse();
+
+        if (countTag) countTag.innerText = `${weekKeys.length} ${weekKeys.length === 1 ? "week" : "weeks"}`;
+
+        if (weekKeys.length === 0) {
+          list.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">No timesheets recorded yet.</div>`;
+          return;
+        }
+
+        const otCap = parseFloat(appState.settings.otCap) || 9.0;
+
+        weekKeys.forEach(mondayYMD => {
+          const w = appState.weeks[mondayYMD];
+          const dObj = fromYMD(mondayYMD);
+
+          let totalHours = 0;
+          let totalMiles = 0;
+
+          (w.days || []).forEach(day => {
+            totalHours += calculateShiftHours(day.start, day.end);
+            totalMiles += parseFloat(day.miles) || 0;
+          });
+
+          const item = document.createElement("div");
+          item.className = "history-entry";
+          item.innerHTML = `
+            <div>
+              <div class="history-entry-title">w/c ${formatFullDate(dObj)}</div>
+              <div class="history-entry-sub">
+                ${totalHours.toFixed(1)} hrs • ${totalMiles} mi • 
+                <span style="font-weight: 800; color: ${w.submitted ? '#059669' : '#d97706'};">
+                  ${w.submitted ? 'Submitted' : 'Draft'}
+                </span>
+              </div>
+            </div>
+            <button class="btn-small-open" type="button" data-monday="${mondayYMD}">Open</button>
+          `;
+          list.appendChild(item);
+        });
+
+        // Delegate open button taps
+        list.querySelectorAll(".btn-small-open").forEach(btn => {
+          btn.addEventListener("click", function () {
+            const targetMonday = this.getAttribute("data-monday");
+            if (targetMonday) {
+              appState.currentWeekMonday = targetMonday;
+              switchTab("timesheet");
+              renderTimesheet();
+            }
+          });
+        });
+      }
+
+      function renderSettings() {
+        const s = appState.settings;
+        const setStd = document.getElementById("settingStdRate");
+        const setOt = document.getElementById("settingOtRate");
+        const setCap = document.getElementById("settingOtCap");
+        const setMile = document.getElementById("settingMileageRate");
+
+        if (setStd) setStd.value = s.stdRate;
+        if (setOt) setOt.value = s.otRate;
+        if (setCap) setCap.value = s.otCap;
+        if (setMile) setMile.value = s.mileageRate;
+      }
+
+      function switchTab(tabId) {
+        const viewTimesheet = document.getElementById("viewTimesheet");
+        const viewHistory = document.getElementById("viewHistory");
+        const viewSettings = document.getElementById("viewSettings");
+
+        const tabBtnTimesheet = document.getElementById("tabBtnTimesheet");
+        const tabBtnHistory = document.getElementById("tabBtnHistory");
+        const tabBtnSettings = document.getElementById("tabBtnSettings");
+
+        [viewTimesheet, viewHistory, viewSettings].forEach(el => {
+          if (el) el.classList.remove("active");
+        });
+        [tabBtnTimesheet, tabBtnHistory, tabBtnSettings].forEach(btn => {
+          if (btn) btn.classList.remove("active");
+        });
+
+        if (tabId === "history") {
+          if (viewHistory) viewHistory.classList.add("active");
+          if (tabBtnHistory) tabBtnHistory.classList.add("active");
+          renderHistory();
+        } else if (tabId === "settings") {
+          if (viewSettings) viewSettings.classList.add("active");
+          if (tabBtnSettings) tabBtnSettings.classList.add("active");
+          renderSettings();
+        } else {
+          if (viewTimesheet) viewTimesheet.classList.add("active");
+          if (tabBtnTimesheet) tabBtnTimesheet.classList.add("active");
+          renderTimesheet();
+        }
+      }
+
+      function attachEventHandlers() {
+        // Week Date Picker Changed
+        const picker = document.getElementById("inputWeekDate");
+        if (picker) {
+          picker.addEventListener("change", function () {
+            if (this.value) {
+              appState.currentWeekMonday = getMondayYMD(this.value);
+              renderTimesheet();
+              saveData();
+            }
+          });
+        }
+
+        // Previous Week Navigation (<)
+        const btnPrev = document.getElementById("btnPrevWeek");
+        if (btnPrev) {
+          btnPrev.addEventListener("click", function () {
+            const cur = fromYMD(appState.currentWeekMonday);
+            cur.setDate(cur.getDate() - 7);
+            appState.currentWeekMonday = toYMD(cur);
+            renderTimesheet();
+            saveData();
+          });
+        }
+
+        // Next Week Navigation (>)
+        const btnNext = document.getElementById("btnNextWeek");
+        if (btnNext) {
+          btnNext.addEventListener("click", function () {
+            const cur = fromYMD(appState.currentWeekMonday);
+            cur.setDate(cur.getDate() + 7);
+            appState.currentWeekMonday = toYMD(cur);
+            renderTimesheet();
+            saveData();
+          });
+        }
+
+        // "This Week" Button
+        const btnToday = document.getElementById("btnCurrentWeek");
+        if (btnToday) {
+          btnToday.addEventListener("click", function () {
+            appState.currentWeekMonday = getMondayYMD(new Date());
+            renderTimesheet();
+            saveData();
+          });
+        }
+
+        // Mark Submitted / Unlock Toggle
+        const btnToggle = document.getElementById("btnToggleSubmit");
+        if (btnToggle) {
+          btnToggle.addEventListener("click", function () {
+            const week = getOrCreateWeek(appState.currentWeekMonday);
+            week.submitted = !week.submitted;
+            saveData();
+            renderTimesheet();
+            showToast(week.submitted ? "Week Locked & Submitted" : "Week Unlocked");
+          });
+        }
+
+        // Input change listeners for 7 days (auto-saves instantly on typing)
+        for (let i = 0; i < 7; i++) {
+          const siteIn = document.getElementById(`site_${i}`);
+          const startIn = document.getElementById(`start_${i}`);
+          const endIn = document.getElementById(`end_${i}`);
+          const milesIn = document.getElementById(`miles_${i}`);
+
+          const handleCellUpdate = () => {
+            const week = getOrCreateWeek(appState.currentWeekMonday);
+            if (!week.days[i]) week.days[i] = {};
+            if (siteIn) week.days[i].site = siteIn.value;
+            if (startIn) week.days[i].start = startIn.value;
+            if (endIn) week.days[i].end = endIn.value;
+            if (milesIn) week.days[i].miles = parseFloat(milesIn.value) || 0;
+
+            saveData();
+            renderTimesheet();
+          };
+
+          if (siteIn) siteIn.addEventListener("input", handleCellUpdate);
+          if (startIn) startIn.addEventListener("input", handleCellUpdate);
+          if (endIn) endIn.addEventListener("input", handleCellUpdate);
+          if (milesIn) milesIn.addEventListener("input", handleCellUpdate);
+        }
+
+        // Office Dispatch Modal Controls
+        const btnOpenDispatch = document.getElementById("btnOpenDispatch");
+        if (btnOpenDispatch) btnOpenDispatch.addEventListener("click", openDispatchModal);
+
+        const btnCloseModal = document.getElementById("btnCloseModal");
+        if (btnCloseModal) btnCloseModal.addEventListener("click", closeDispatchModal);
+
+        const modalBackdrop = document.getElementById("modalDispatch");
+        if (modalBackdrop) {
+          modalBackdrop.addEventListener("click", function (e) {
+            if (e.target === modalBackdrop) closeDispatchModal();
+          });
+        }
+
+        // Clipboard Copy Button
+        const btnCopy = document.getElementById("btnDispatchCopy");
+        if (btnCopy) {
+          btnCopy.addEventListener("click", function () {
+            const preview = document.getElementById("txtReportPreview");
+            if (preview) {
+              preview.select();
+              preview.setSelectionRange(0, 99999);
+              try {
+                document.execCommand("copy");
+                showToast("Copied to clipboard!");
+              } catch (err) {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(preview.value).then(() => showToast("Copied!"));
+                }
+              }
+            }
+          });
+        }
+
+        // Settings Save Button
+        const btnSaveSettings = document.getElementById("btnSaveSettings");
+        if (btnSaveSettings) {
+          btnSaveSettings.addEventListener("click", function () {
+            const sStd = parseFloat(document.getElementById("settingStdRate").value) || 12.50;
+            const sOt = parseFloat(document.getElementById("settingOtRate").value) || 18.75;
+            const sCap = parseFloat(document.getElementById("settingOtCap").value) || 9.0;
+            const sMile = parseFloat(document.getElementById("settingMileageRate").value) || 0.45;
+
+            appState.settings.stdRate = sStd;
+            appState.settings.otRate = sOt;
+            appState.settings.otCap = sCap;
+            appState.settings.mileageRate = sMile;
+
+            saveData();
+            showToast("Settings Updated");
+            switchTab("timesheet");
+          });
+        }
+
+        // Clear Current Week Button
+        const btnClear = document.getElementById("btnClearCurrentWeek");
+        if (btnClear) {
+          btnClear.addEventListener("click", function () {
+            const week = getOrCreateWeek(appState.currentWeekMonday);
+            week.submitted = false;
+            week.days = [];
+            for (let i = 0; i < 7; i++) {
+              week.days.push({ site: "", start: "", end: "", miles: 0 });
+            }
+            saveData();
+            showToast("Week Cleared");
+            switchTab("timesheet");
+          });
+        }
+
+        // Export Backup JSON
+        const btnExport = document.getElementById("btnExportBackup");
+        if (btnExport) {
+          btnExport.addEventListener("click", function () {
+            const jsonStr = JSON.stringify(appState, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `sams_timesheet_backup_${toYMD(new Date())}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Backup exported");
+          });
+        }
+
+        // Tab Bar Buttons
+        const tabBtnTimesheet = document.getElementById("tabBtnTimesheet");
+        const tabBtnHistory = document.getElementById("tabBtnHistory");
+        const tabBtnSettings = document.getElementById("tabBtnSettings");
+
+        if (tabBtnTimesheet) tabBtnTimesheet.addEventListener("click", () => switchTab("timesheet"));
+        if (tabBtnHistory) tabBtnHistory.addEventListener("click", () => switchTab("history"));
+        if (tabBtnSettings) tabBtnSettings.addEventListener("click", () => switchTab("settings"));
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        loadData();
+        attachEventHandlers();
+        renderTimesheet();
+      });
+
+    })();
+  </script>
+</body>
+</html>
