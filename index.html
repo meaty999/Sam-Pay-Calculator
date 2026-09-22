@@ -1,517 +1,1547 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Shift & Pay Tracker</title>
-    <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --text-main: #2d3748;
-            --accent: #3182ce;
-            --accent-hover: #2b6cb0;
-            --border: #e2e8f0;
-            --success: #38a169;
-            --success-hover: #2f855a;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sam's Timesheet & Pay Tracker Pro</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --brand: #0284c7;
+      --brand-hover: #0369a1;
+      --brand-light: #f0f9ff;
+      --accent-green: #10b981;
+      --accent-green-dark: #059669;
+      --accent-amber: #f59e0b;
+      --accent-amber-light: #fef3c7;
+      --danger: #ef4444;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .container {
-            max-width: 650px;
-            width: 100%;
-        }
+    body {
+      font-family: var(--font-family);
+      background-color: #f1f5f9;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 75px;
+      touch-action: manipulation;
+    }
 
-        h1 {
-            font-size: 1.4rem;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #1a202c;
-        }
+    /* App Header */
+    header {
+      background: var(--bg);
+      color: #ffffff;
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
+    .header-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        h2 {
-            font-size: 1.1rem; 
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed var(--border);
-            padding-bottom: 5px;
-            color: #4a5568;
-        }
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .form-group {
-            margin-bottom: 12px;
-        }
+    .logo-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 18px;
+    }
 
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 0.85rem;
-        }
+    .app-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        input[type="number"], input[type="time"], input[type="text"], input[type="date"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.95rem;
-        }
+    .pill-pro {
+      font-size: 10px;
+      background: #0369a1;
+      color: #7dd3fc;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
 
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 10px;
-        }
+    .app-subtitle {
+      font-size: 11px;
+      color: #94a3b8;
+    }
 
-        .day-row {
-            display: grid;
-            grid-template-columns: 105px 1.2fr 0.8fr 0.8fr 0.7fr;
-            gap: 6px;
-            align-items: center;
-            margin-bottom: 12px;
-        }
+    .save-indicator {
+      font-size: 11px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+    }
 
-        .day-label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            line-height: 1.2;
-        }
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
 
-        .day-subtext {
-            font-size: 0.75rem;
-            color: #718096;
-            font-weight: normal;
-        }
+    /* Layout Containers */
+    main {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px;
+      flex: 1;
+    }
 
-        .day-header {
-            display: grid;
-            grid-template-columns: 105px 1.2fr 0.8fr 0.8fr 0.7fr;
-            gap: 6px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #718096;
-            margin-bottom: 6px;
-        }
+    .tab-view {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .btn {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 5px;
-        }
+    .tab-view.active {
+      display: flex;
+    }
 
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
 
-        .btn-send {
-            background-color: var(--success);
-            margin-top: 10px;
-        }
+    /* Navigation Bar Week Picker */
+    .week-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--card-border);
+    }
 
-        .btn-send:hover {
-            background-color: var(--success-hover);
-        }
+    .btn-nav-arrow {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
 
-        .btn-secondary {
-            background-color: transparent;
-            color: #718096;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
+    .btn-nav-arrow:active {
+      background: #e2e8f0;
+      transform: scale(0.96);
+    }
 
-        .btn-secondary:hover {
-            background-color: #f7fafc;
-        }
+    .week-nav-center {
+      text-align: center;
+      flex: 1;
+    }
 
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-        }
+    .week-sublabel {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
 
-        .results-table td {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
-        }
+    .status-badge {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
 
-        .results-table tr:last-child td {
-            border-bottom: none;
-        }
+    .status-badge.draft {
+      background: var(--accent-amber-light);
+      color: #92400e;
+    }
 
-        .text-right {
-            text-align: right;
-        }
+    .status-badge.submitted {
+      background: #d1fae5;
+      color: #065f46;
+    }
 
-        .highlight-row {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--success);
-        }
+    .date-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
 
-        @media (max-width: 500px) {
-            .day-row, .day-header {
-                grid-template-columns: 80px 1.1fr 0.8fr 0.8fr 0.7fr;
-                gap: 4px;
-            }
-            input[type="number"], input[type="time"], input[type="text"], input[type="date"] {
-                padding: 6px;
-                font-size: 0.85rem;
-            }
-        }
-    </style>
+    input[type="date"].week-date-input {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed #94a3b8;
+      padding: 1px 4px;
+      text-align: center;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .today-btn {
+      background: none;
+      border: none;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Day Rows */
+    .days-table-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .day-row {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .day-row:last-child {
+      border-bottom: none;
+    }
+
+    .day-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .day-title-grp {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .day-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #1e293b;
+    }
+
+    .day-date-tag {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .day-summary-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .day-summary-badge.worked {
+      color: var(--brand-hover);
+      background: var(--brand-light);
+      padding: 1px 7px;
+      border-radius: 6px;
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 0.75fr;
+      gap: 6px;
+    }
+
+    .input-field {
+      width: 100%;
+      font-family: inherit;
+      padding: 8px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #f8fafc;
+      color: #0f172a;
+      outline: none;
+      transition: border 0.15s, background 0.15s;
+    }
+
+    .input-field:focus {
+      border-color: var(--brand);
+      background: #ffffff;
+    }
+
+    .input-field:disabled {
+      background: #e2e8f0;
+      color: #64748b;
+      opacity: 0.75;
+    }
+
+    .input-center {
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .input-labels-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 0.75fr;
+      gap: 6px;
+      padding: 6px 12px 2px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Action Buttons Row */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 8px;
+    }
+
+    .btn-main {
+      font-family: inherit;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-main:active {
+      transform: scale(0.98);
+    }
+
+    .btn-send {
+      background: var(--accent-green);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-send:hover {
+      background: var(--accent-green-dark);
+    }
+
+    .btn-lock {
+      background: #1e293b;
+      color: #ffffff;
+    }
+
+    .btn-lock.unlocked {
+      background: #334155;
+    }
+
+    .btn-lock.submitted {
+      background: #d97706;
+      color: #ffffff;
+    }
+
+    /* Private Pay Estimation Card */
+    .pay-card {
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .pay-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pay-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .private-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #b45309;
+      background: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .pay-sub-note {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .hours-split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .hours-box {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .hours-box.ot {
+      background: #fffbeb;
+      border-color: #fef3c7;
+    }
+
+    .hours-box-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      display: block;
+    }
+
+    .hours-box-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .hours-box-sub {
+      font-size: 11px;
+      color: #64748b;
+      display: block;
+      margin-top: 1px;
+    }
+
+    .pay-line-items {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 12px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+
+    .pay-line {
+      display: flex;
+      justify-content: space-between;
+      color: #334155;
+    }
+
+    .pay-line.gross {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .pay-line.deduction {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .pay-line.mileage {
+      color: #0369a1;
+      font-weight: 600;
+    }
+
+    .takehome-total-box {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .takehome-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .takehome-val {
+      font-size: 20px;
+      font-weight: 900;
+      color: #059669;
+    }
+
+    /* Bottom Tab Bar */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 50;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 6px 16px;
+      transition: color 0.15s;
+    }
+
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .nav-btn.active {
+      color: var(--brand);
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 60;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      padding: 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
+      animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .btn-close-modal {
+      background: #f1f5f9;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-weight: bold;
+      cursor: pointer;
+      color: #475569;
+    }
+
+    .report-textarea {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      font-family: monospace, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #0f172a;
+      resize: none;
+      height: 170px;
+      outline: none;
+    }
+
+    .dispatch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-dispatch {
+      padding: 12px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #ffffff;
+      transition: opacity 0.15s;
+    }
+
+    .btn-dispatch:active {
+      transform: scale(0.98);
+    }
+
+    .btn-sms { background: #0284c7; }
+    .btn-whatsapp { background: #10b981; }
+    .btn-email { background: #334155; }
+    .btn-copy { background: #64748b; }
+
+    /* History and Settings Tab */
+    .history-card-item {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .history-info-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .history-info-meta {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .settings-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .settings-helper {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    /* Toast Notification */
+    #toastNotice {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      z-index: 70;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    #toastNotice.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Sam's Shift & Pay Tracker</h1>
-
-    <!-- Setup Card -->
-    <div class="card">
-        <h2>1. Pay & Week Setup</h2>
-        <div class="form-group">
-            <label for="weekCommencing">Week Commencing (Monday Date)</label>
-            <input type="date" id="weekCommencing" onchange="updateDatesAndPay()">
+  <header>
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-badge">S</div>
+        <div>
+          <div class="app-title">Sam's Timesheet <span class="pill-pro">PRO</span></div>
+          <div class="app-subtitle">UK Shift & Pay Tracker</div>
         </div>
-        <div class="grid-4">
-            <div class="form-group">
-                <label for="hourlyRate">Std Rate (£)</label>
-                <input type="number" id="hourlyRate" step="0.01" placeholder="12.50" oninput="calculatePay()">
-            </div>
-            <div class="form-group">
-                <label for="otRate">OT Rate (£)</label>
-                <input type="number" id="otRate" step="0.01" placeholder="18.75" oninput="calculatePay()">
-            </div>
-            <div class="form-group">
-                <label for="mileageRate">Per Mile (£)</label>
-                <input type="number" id="mileageRate" step="0.01" value="0.45" placeholder="0.45" oninput="calculatePay()">
-            </div>
-            <div class="form-group">
-                <label for="maxStdHours">OT After</label>
-                <input type="number" id="maxStdHours" step="0.5" value="9" oninput="calculatePay()">
-            </div>
-        </div>
+      </div>
+      <div class="save-indicator">
+        <span class="pulse-dot"></span> Saved
+      </div>
     </div>
+  </header>
 
-    <!-- Daily Log Card -->
-    <div class="card">
-        <h2>2. Enter Times, Locations & Miles</h2>
-        <div class="day-header">
-            <div>Day</div>
-            <div>Site/Location</div>
-            <div>Start</div>
-            <div>Finish</div>
-            <div>Miles</div>
+  <div id="toastNotice">Saved</div>
+
+  <main>
+    <div id="tabTimesheet" class="tab-view active">
+
+      <!-- Week Navigation -->
+      <div class="week-nav-bar">
+        <button class="btn-nav-arrow" onclick="navWeek(-1)" aria-label="Previous week">&lt;</button>
+        <div class="week-nav-center">
+          <div class="week-sublabel">
+            <span>Week Commencing</span>
+            <span id="badgeWeekStatus" class="status-badge draft">Draft</span>
+          </div>
+          <div class="date-row">
+            <input type="date" id="inputWeekCommencing" class="week-date-input" onchange="onWeekDateChanged(this.value)">
+            <button class="today-btn" onclick="jumpToCurrentWeek()">This Week</button>
+          </div>
         </div>
-        
+        <button class="btn-nav-arrow" onclick="navWeek(1)" aria-label="Next week">&gt;</button>
+      </div>
+
+      <!-- Days shift entries -->
+      <div class="card days-table-card">
+        <div class="input-labels-row">
+          <div>Site / Location</div>
+          <div style="text-align: center;">Start</div>
+          <div style="text-align: center;">Finish</div>
+          <div style="text-align: center;">Miles</div>
+        </div>
         <div id="daysContainer">
-            <!-- Populated via JavaScript -->
+          <!-- Dynamically populated rows for Monday through Sunday -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions-grid">
+        <button class="btn-main btn-send" onclick="openDispatchModal()">
+          <span>Send To Office</span>
+        </button>
+        <button id="btnLockWeek" class="btn-main btn-lock unlocked" onclick="toggleWeekSubmission()">
+          <span id="btnLockText">Mark Submitted</span>
+        </button>
+      </div>
+
+      <!-- Private Pay Estimation Card -->
+      <div class="card pay-card">
+        <div class="pay-card-header">
+          <div>
+            <div class="pay-card-title">
+              Estimated Personal Pay
+              <span class="private-tag">Private</span>
+            </div>
+            <div class="pay-sub-note">For your own reference only • Never sent to office</div>
+          </div>
+          <div style="font-size: 10px; color: #64748b; font-weight: 700;">UK PAYE &amp; NI</div>
         </div>
 
-        <button class="btn btn-send" onclick="sendReport()">Send Weekly Report</button>
-        <button class="btn btn-secondary" onclick="clearHoursOnly()">Clear This Week's Entries</button>
+        <div class="hours-split-row">
+          <div class="hours-box">
+            <span class="hours-box-label">Standard Hours</span>
+            <span class="hours-box-val" id="dispStdHours">0.00 hrs</span>
+            <span class="hours-box-sub" id="dispStdRateSub">@ £12.50 = £0.00</span>
+          </div>
+          <div class="hours-box ot">
+            <span class="hours-box-label" style="color: #92400e;">Overtime Hours (&gt; 9h)</span>
+            <span class="hours-box-val" id="dispOtHours" style="color: #92400e;">0.00 hrs</span>
+            <span class="hours-box-sub" id="dispOtRateSub" style="color: #b45309;">@ £18.75 = £0.00</span>
+          </div>
+        </div>
+
+        <div class="pay-line-items">
+          <div class="pay-line gross">
+            <span>Total Gross Pay (Taxable)</span>
+            <span id="dispGrossPay">£0.00</span>
+          </div>
+          <div class="pay-line deduction">
+            <span>Est. UK Income Tax (20% PAYE)</span>
+            <span id="dispIncomeTax">-£0.00</span>
+          </div>
+          <div class="pay-line deduction">
+            <span>Est. National Insurance (Class 1 @ 8%)</span>
+            <span id="dispNationalInsurance">-£0.00</span>
+          </div>
+          <div class="pay-line mileage">
+            <span>Mileage Reimbursement (Tax-Free)</span>
+            <span id="dispMileagePay">+£0.00 (0 mi)</span>
+          </div>
+        </div>
+
+        <div class="takehome-total-box">
+          <div>
+            <div class="takehome-title">Take-Home Pay</div>
+            <div style="font-size: 10px; color: #64748b;">Estimated net pay including mileage</div>
+          </div>
+          <div class="takehome-val" id="dispTakeHomePay">£0.00</div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Live Breakdown Card -->
-    <div class="card">
-        <h2>Estimated Weekly Breakdown</h2>
-        <table class="results-table">
-            <tr>
-                <td>Total Standard Hours</td>
-                <td id="totalStdHours" class="text-right">0.00 hrs</td>
-            </tr>
-            <tr>
-                <td>Total Overtime Hours</td>
-                <td id="totalOtHours" class="text-right">0.00 hrs</td>
-            </tr>
-            <tr>
-                <td>Standard Pay</td>
-                <td id="standardPay" class="text-right">£0.00</td>
-            </tr>
-            <tr>
-                <td>Overtime Pay</td>
-                <td id="otPayTotal" class="text-right">£0.00</td>
-            </tr>
-            <tr style="font-weight: 600;">
-                <td>Gross Pay (Taxable)</td>
-                <td id="grossPay" class="text-right">£0.00</td>
-            </tr>
-            <tr>
-                <td>Income Tax (PAYE Estimate)</td>
-                <td id="incomeTax" class="text-right" style="color: #e53e3e;">-£0.00</td>
-            </tr>
-            <tr>
-                <td>National Insurance</td>
-                <td id="nationalInsurance" class="text-right" style="color: #e53e3e;">-£0.00</td>
-            </tr>
-            <tr>
-                <td>Mileage Reimbursement (Tax-Free)</td>
-                <td id="mileagePayTotal" class="text-right" style="color: #2b6cb0;">+£0.00</td>
-            </tr>
-            <tr class="highlight-row">
-                <td>Total Take-Home Pay</td>
-                <td id="netPay" class="text-right">£0.00</td>
-            </tr>
-        </table>
+    <!-- History Tab View -->
+    <div id="tabHistory" class="tab-view">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+          <h2 style="font-size: 14px; font-weight: 800;">Timesheet Archives</h2>
+          <span id="historyCountBadge" style="font-size: 11px; font-weight: 700; color: #0284c7;">0 weeks</span>
+        </div>
+        <p style="font-size: 11px; color: #64748b; margin-bottom: 12px;">All timesheets are stored permanently on this device. Tap "Open" to review or re-send.</p>
+        <div id="historyListContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
     </div>
-</div>
 
-<script>
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    <!-- Settings Tab View -->
+    <div id="tabSettings" class="tab-view">
+      <div class="card settings-group">
+        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px;">Pay Rates & Overtime Rules</h2>
 
-    const container = document.getElementById('daysContainer');
-    days.forEach(day => {
-        const dayRow = document.createElement('div');
-        dayRow.className = 'day-row';
-        dayRow.innerHTML = `
-            <div class="day-label" id="label-${day}">
-                ${day}
-                <div class="day-subtext" id="subtext-${day}"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="settings-row">
+            <label class="settings-label">Standard Rate (£)</label>
+            <input type="number" id="cfgHourlyRate" step="0.01" class="input-field" onchange="saveSettings()">
+          </div>
+          <div class="settings-row">
+            <label class="settings-label">Overtime Rate (£)</label>
+            <input type="number" id="cfgOtRate" step="0.01" class="input-field" onchange="saveSettings()">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="settings-row">
+            <label class="settings-label">Overtime Kicks in After</label>
+            <input type="number" id="cfgMaxStdHours" step="0.5" class="input-field" onchange="saveSettings()">
+            <span class="settings-helper">Standard limit (Default: 9.0 hrs)</span>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label">Mileage Rate (£/mile)</label>
+            <input type="number" id="cfgMileageRate" step="0.01" class="input-field" onchange="saveSettings()">
+            <span class="settings-helper">HMRC rate: £0.45/mile</span>
+          </div>
+        </div>
+
+        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-top: 8px;">Office Contact Details</h2>
+
+        <div class="settings-row">
+          <label class="settings-label">Office Phone Number (For SMS / WhatsApp)</label>
+          <input type="tel" id="cfgOfficePhone" placeholder="e.g. 07123456789" class="input-field" onchange="saveSettings()">
+          <span class="settings-helper">Pre-fills recipient in messaging apps</span>
+        </div>
+
+        <div class="settings-row">
+          <label class="settings-label">Office Email Address (Optional)</label>
+          <input type="email" id="cfgOfficeEmail" placeholder="e.g. timesheets@yourcompany.co.uk" class="input-field" onchange="saveSettings()">
+        </div>
+
+        <h2 style="font-size: 14px; font-weight: 800; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-top: 8px;">Backup & Data Protection</h2>
+        <p style="font-size: 11px; color: #64748b;">Prevent data loss if you ever clear your browser cache or change phones.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+          <button class="btn-main" style="background: #f1f5f9; color: #334155; font-size: 12px; padding: 10px;" onclick="exportBackupData()">
+            Export Backup (.json)
+          </button>
+          <label class="btn-main" style="background: #f1f5f9; color: #334155; font-size: 12px; padding: 10px; cursor: pointer; text-align: center;">
+            Restore Backup
+            <input type="file" id="fileImportBackup" accept=".json" onchange="importBackupData(event)" style="display: none;">
+          </label>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Office Dispatch Modal -->
+  <div id="modalDispatch" class="modal-overlay" onclick="closeDispatchModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Send Timesheet to Office</div>
+          <div class="modal-subtitle">Hours, sites, and mileage only (NO pay numbers)</div>
+        </div>
+        <button class="btn-close-modal" onclick="closeDispatchModal()">&times;</button>
+      </div>
+
+      <textarea id="reportOfficeText" class="report-textarea" readonly></textarea>
+
+      <div class="dispatch-grid">
+        <button class="btn-dispatch btn-sms" onclick="executeDispatch('sms')">SMS Text</button>
+        <button class="btn-dispatch btn-whatsapp" onclick="executeDispatch('whatsapp')">WhatsApp</button>
+        <button class="btn-dispatch btn-email" onclick="executeDispatch('email')">Email</button>
+        <button class="btn-dispatch btn-copy" onclick="executeDispatch('copy')">Copy Message</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="navBtnTimesheet" onclick="switchTab('tabTimesheet')">
+      <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+      Timesheet
+    </button>
+    <button class="nav-btn" id="navBtnHistory" onclick="switchTab('tabHistory')">
+      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+      History
+    </button>
+    <button class="nav-btn" id="navBtnSettings" onclick="switchTab('tabSettings')">
+      <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      Settings
+    </button>
+  </nav>
+
+  <script>
+    const STORAGE_KEY = "SAMS_TRACKER_DATA_PRO_V3";
+    const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    const DEFAULT_STORE = {
+      version: 3,
+      settings: {
+        hourlyRate: 12.50,
+        otRate: 18.75,
+        maxStdHours: 9.0,
+        mileageRate: 0.45,
+        officePhone: "",
+        officeEmail: ""
+      },
+      currentWeekMonday: "",
+      weeks: {} // weekKey (YYYY-MM-DD) -> { monday, status, days: { Monday: { site, start, finish, miles } } }
+    };
+
+    let appData = null;
+    let activeMonday = "";
+
+    // UK Monday ISO calculator
+    function getMondayIso(dateObj) {
+      const d = new Date(dateObj);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const monday = new Date(d.setDate(diff));
+      return monday.toISOString().split("T")[0];
+    }
+
+    function createEmptyWeek(mondayIso) {
+      const days = {};
+      const base = new Date(mondayIso + "T00:00:00");
+      DAYS_OF_WEEK.forEach((dName, idx) => {
+        const cur = new Date(base);
+        cur.setDate(base.getDate() + idx);
+        days[dName] = {
+          date: cur.toISOString().split("T")[0],
+          site: "",
+          start: "",
+          finish: "",
+          miles: ""
+        };
+      });
+      return {
+        monday: mondayIso,
+        status: "draft",
+        days: days
+      };
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          appData = JSON.parse(raw);
+        }
+      } catch (err) {
+        console.error("Local data parse error", err);
+      }
+
+      if (!appData || !appData.version) {
+        appData = JSON.parse(JSON.stringify(DEFAULT_STORE));
+        appData.currentWeekMonday = getMondayIso(new Date());
+        saveData();
+      }
+
+      if (!appData.currentWeekMonday) {
+        appData.currentWeekMonday = getMondayIso(new Date());
+      }
+
+      activeMonday = appData.currentWeekMonday;
+      if (!appData.weeks[activeMonday]) {
+        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
+        saveData();
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        showToast("Auto-Saved");
+      } catch (e) {
+        console.error("Storage save failed", e);
+      }
+    }
+
+    function calculateShiftDuration(startStr, finishStr) {
+      if (!startStr || !finishStr) return 0;
+      const [sh, sm] = startStr.split(":").map(Number);
+      const [fh, fm] = finishStr.split(":").map(Number);
+      let s = sh + sm / 60;
+      let f = fh + fm / 60;
+      if (f < s) f += 24; // Smooth midnight crossing
+      return Math.max(0, f - s); // No lunch deduction as requested
+    }
+
+    function renderDaysView() {
+      const container = document.getElementById("daysContainer");
+      container.innerHTML = "";
+
+      const currentWeek = appData.weeks[activeMonday] || createEmptyWeek(activeMonday);
+      const isSubmitted = currentWeek.status === "submitted";
+
+      DAYS_OF_WEEK.forEach((dayName, idx) => {
+        const dayData = currentWeek.days[dayName] || { site: "", start: "", finish: "", miles: "" };
+        const baseDate = new Date(activeMonday + "T00:00:00");
+        baseDate.setDate(baseDate.getDate() + idx);
+        const ukDateStr = baseDate.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
+
+        const row = document.createElement("div");
+        row.className = "day-row";
+        row.innerHTML = `
+          <div class="day-row-header">
+            <div class="day-title-grp">
+              <span class="day-name">${dayName}</span>
+              <span class="day-date-tag">${ukDateStr}</span>
             </div>
-            <input type="text" id="site-${day}" placeholder="Site name" oninput="calculatePay()">
-            <input type="time" id="start-${day}" oninput="calculatePay()">
-            <input type="time" id="end-${day}" oninput="calculatePay()">
-            <input type="number" id="miles-${day}" placeholder="0" min="0" step="1" oninput="calculatePay()">
+            <div id="badge-${dayName}" class="day-summary-badge">Off</div>
+          </div>
+          <div class="inputs-grid">
+            <input type="text" placeholder="Site / Job" value="${escapeHtml(dayData.site)}" 
+                   ${isSubmitted ? "disabled" : ""} 
+                   oninput="onInputUpdate('${dayName}', 'site', this.value)" class="input-field">
+            <input type="time" value="${dayData.start}" 
+                   ${isSubmitted ? "disabled" : ""} 
+                   oninput="onInputUpdate('${dayName}', 'start', this.value)" class="input-field input-center">
+            <input type="time" value="${dayData.finish}" 
+                   ${isSubmitted ? "disabled" : ""} 
+                   oninput="onInputUpdate('${dayName}', 'finish', this.value)" class="input-field input-center">
+            <input type="number" placeholder="0" min="0" value="${dayData.miles}" 
+                   ${isSubmitted ? "disabled" : ""} 
+                   oninput="onInputUpdate('${dayName}', 'miles', this.value)" class="input-field input-center">
+          </div>
         `;
-        container.appendChild(dayRow);
-    });
+        container.appendChild(row);
+      });
 
-    window.onload = function() {
-        if(localStorage.getItem('weekCommencing')) document.getElementById('weekCommencing').value = localStorage.getItem('weekCommencing');
-        if(localStorage.getItem('hourlyRate')) document.getElementById('hourlyRate').value = localStorage.getItem('hourlyRate');
-        if(localStorage.getItem('otRate')) document.getElementById('otRate').value = localStorage.getItem('otRate');
-        if(localStorage.getItem('mileageRate')) document.getElementById('mileageRate').value = localStorage.getItem('mileageRate');
-        if(localStorage.getItem('maxStdHours')) document.getElementById('maxStdHours').value = localStorage.getItem('maxStdHours');
-        
-        days.forEach(day => {
-            if(localStorage.getItem(`site-${day}`)) document.getElementById(`site-${day}`).value = localStorage.getItem(`site-${day}`);
-            if(localStorage.getItem(`start-${day}`)) document.getElementById(`start-${day}`).value = localStorage.getItem(`start-${day}`);
-            if(localStorage.getItem(`end-${day}`)) document.getElementById(`end-${day}`).value = localStorage.getItem(`end-${day}`);
-            if(localStorage.getItem(`miles-${day}`)) document.getElementById(`miles-${day}`).value = localStorage.getItem(`miles-${day}`);
-        });
-
-        updateDatesAndPay();
+      document.getElementById("inputWeekCommencing").value = activeMonday;
+      updateStatusBadge(currentWeek.status);
+      recalculatePayFigures();
     }
 
-    function updateDatesAndPay() {
-        const dateInput = document.getElementById('weekCommencing').value;
-        if(dateInput) {
-            localStorage.setItem('weekCommencing', dateInput);
-            const baseDate = new Date(dateInput + 'T00:00:00');
-            days.forEach((day, index) => {
-                const currentDayDate = new Date(baseDate);
-                currentDayDate.setDate(baseDate.getDate() + index);
-                const dayFormatted = currentDayDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-                document.getElementById(`subtext-${day}`).innerText = dayFormatted;
-            });
-        } else {
-            days.forEach(day => {
-                document.getElementById(`subtext-${day}`).innerText = '';
-            });
+    function escapeHtml(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function onInputUpdate(dayName, field, value) {
+      if (!appData.weeks[activeMonday]) {
+        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
+      }
+      appData.weeks[activeMonday].days[dayName][field] = value;
+      saveData();
+      recalculatePayFigures();
+    }
+
+    function onWeekDateChanged(chosenDate) {
+      if (!chosenDate) return;
+      const targetMonday = getMondayIso(chosenDate);
+      activeMonday = targetMonday;
+      appData.currentWeekMonday = targetMonday;
+      if (!appData.weeks[activeMonday]) {
+        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
+      }
+      saveData();
+      renderDaysView();
+    }
+
+    function navWeek(direction) {
+      const cur = new Date(activeMonday + "T00:00:00");
+      cur.setDate(cur.getDate() + direction * 7);
+      const targetMonday = cur.toISOString().split("T")[0];
+      activeMonday = targetMonday;
+      appData.currentWeekMonday = targetMonday;
+      if (!appData.weeks[activeMonday]) {
+        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
+      }
+      saveData();
+      renderDaysView();
+    }
+
+    function jumpToCurrentWeek() {
+      const todayMonday = getMondayIso(new Date());
+      activeMonday = todayMonday;
+      appData.currentWeekMonday = todayMonday;
+      if (!appData.weeks[activeMonday]) {
+        appData.weeks[activeMonday] = createEmptyWeek(activeMonday);
+      }
+      saveData();
+      renderDaysView();
+    }
+
+    function updateStatusBadge(status) {
+      const badge = document.getElementById("badgeWeekStatus");
+      const btnLock = document.getElementById("btnLockWeek");
+      const btnText = document.getElementById("btnLockText");
+
+      if (status === "submitted") {
+        badge.className = "status-badge submitted";
+        badge.innerText = "Submitted";
+        btnLock.className = "btn-main btn-lock submitted";
+        btnText.innerText = "Unlock Timesheet";
+      } else {
+        badge.className = "status-badge draft";
+        badge.innerText = "Draft";
+        btnLock.className = "btn-main btn-lock unlocked";
+        btnText.innerText = "Mark Submitted";
+      }
+    }
+
+    function toggleWeekSubmission() {
+      const currentWeek = appData.weeks[activeMonday];
+      if (!currentWeek) return;
+
+      if (currentWeek.status === "submitted") {
+        currentWeek.status = "draft";
+        showToast("Timesheet Unlocked");
+      } else {
+        currentWeek.status = "submitted";
+        showToast("Marked as Submitted");
+      }
+      saveData();
+      renderDaysView();
+      renderHistoryView();
+    }
+
+    function recalculatePayFigures() {
+      const currentWeek = appData.weeks[activeMonday] || createEmptyWeek(activeMonday);
+      const s = appData.settings;
+
+      let grandStdHrs = 0;
+      let grandOtHrs = 0;
+      let grandMiles = 0;
+
+      DAYS_OF_WEEK.forEach(day => {
+        const d = currentWeek.days[day];
+        const duration = calculateShiftDuration(d.start, d.finish);
+        const miles = parseFloat(d.miles) || 0;
+        grandMiles += miles;
+
+        let std = 0;
+        let ot = 0;
+        if (duration > 0) {
+          if (duration <= s.maxStdHours) {
+            std = duration;
+          } else {
+            std = s.maxStdHours;
+            ot = duration - s.maxStdHours;
+          }
+          grandStdHrs += std;
+          grandOtHrs += ot;
         }
-        calculatePay();
-    }
 
-    function getDuration(startVal, endVal) {
-        if(!startVal || !endVal) return 0;
-        
-        const [startH, startM] = startVal.split(':').map(Number);
-        const [endH, endM] = endVal.split(':').map(Number);
-        
-        let startDec = startH + (startM / 60);
-        let endDec = endH + (endM / 60);
-        
-        if (endDec < startDec) {
-            endDec += 24; 
+        const badge = document.getElementById(`badge-${day}`);
+        if (badge) {
+          if (duration > 0 || miles > 0) {
+            let label = `${std.toFixed(1)}h`;
+            if (ot > 0) label += ` + ${ot.toFixed(1)}h OT`;
+            if (miles > 0) label += ` | ${miles}mi`;
+            badge.innerText = label;
+            badge.className = "day-summary-badge worked";
+          } else {
+            badge.innerText = "Off";
+            badge.className = "day-summary-badge";
+          }
         }
-        
-        return Math.max(0, endDec - startDec);
+      });
+
+      const stdPay = grandStdHrs * s.hourlyRate;
+      const otPay = grandOtHrs * s.otRate;
+      const grossTaxablePay = stdPay + otPay;
+      const mileageExpense = grandMiles * s.mileageRate;
+
+      // UK PAYE Tax (Personal allowance 1257L = £12,570/yr pro-rata £241.73/wk @ 20%)
+      const weeklyTaxAllowance = 12570 / 52;
+      let incomeTax = 0;
+      if (grossTaxablePay > weeklyTaxAllowance) {
+        incomeTax = (grossTaxablePay - weeklyTaxAllowance) * 0.20;
+      }
+
+      // UK Class 1 National Insurance (£242 threshold @ 8%)
+      const weeklyNIThreshold = 242.0;
+      let niDeduction = 0;
+      if (grossTaxablePay > weeklyNIThreshold) {
+        niDeduction = (grossTaxablePay - weeklyNIThreshold) * 0.08;
+      }
+
+      // Net take-home pay + tax-free mileage reimbursement
+      const netTakeHome = grossTaxablePay - incomeTax - niDeduction + mileageExpense;
+
+      // Update UI elements
+      document.getElementById("dispStdHours").innerText = `${grandStdHrs.toFixed(2)} hrs`;
+      document.getElementById("dispStdRateSub").innerText = `@ £${s.hourlyRate.toFixed(2)} = £${stdPay.toFixed(2)}`;
+
+      document.getElementById("dispOtHours").innerText = `${grandOtHrs.toFixed(2)} hrs`;
+      document.getElementById("dispOtRateSub").innerText = `@ £${s.otRate.toFixed(2)} = £${otPay.toFixed(2)}`;
+
+      document.getElementById("dispGrossPay").innerText = `£${grossTaxablePay.toFixed(2)}`;
+      document.getElementById("dispIncomeTax").innerText = `-£${incomeTax.toFixed(2)}`;
+      document.getElementById("dispNationalInsurance").innerText = `-£${niDeduction.toFixed(2)}`;
+      document.getElementById("dispMileagePay").innerText = `+£${mileageExpense.toFixed(2)} (${grandMiles} mi)`;
+      document.getElementById("dispTakeHomePay").innerText = `£${netTakeHome.toFixed(2)}`;
+
+      return { grandStdHrs, grandOtHrs, grandMiles };
     }
 
-    function calculatePay() {
-        const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-        const otRate = parseFloat(document.getElementById('otRate').value) || 0;
-        const mileageRate = parseFloat(document.getElementById('mileageRate').value) || 0;
-        const maxStdHours = parseFloat(document.getElementById('maxStdHours').value) || 9;
+    function buildOfficeReport() {
+      const currentWeek = appData.weeks[activeMonday];
+      if (!currentWeek) return "";
+      const s = appData.settings;
+      const totals = recalculatePayFigures();
 
-        localStorage.setItem('hourlyRate', hourlyRate);
-        localStorage.setItem('otRate', otRate);
-        localStorage.setItem('mileageRate', mileageRate);
-        localStorage.setItem('maxStdHours', maxStdHours);
+      const [y, m, d] = activeMonday.split("-");
+      const ukDateHeader = `${d}/${m}/${y}`;
 
-        let totalStdHours = 0;
-        let totalOtHours = 0;
+      let lines = [];
+      lines.push(`WEEKLY TIMESHEET - SAM (w/c ${ukDateHeader})`);
+      lines.push(`----------------------------------`);
+
+      let daysWorkedCount = 0;
+      DAYS_OF_WEEK.forEach((dayName, idx) => {
+        const item = currentWeek.days[dayName];
+        const duration = calculateShiftDuration(item.start, item.finish);
+        const miles = parseFloat(item.miles) || 0;
+
+        if (duration > 0 || miles > 0) {
+          daysWorkedCount++;
+          const dayDate = new Date(activeMonday + "T00:00:00");
+          dayDate.setDate(dayDate.getDate() + idx);
+          const shortDate = dayDate.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit" });
+
+          let rowText = `${dayName} (${shortDate})`;
+          if (item.site && item.site.trim() !== "") {
+            rowText += ` [${item.site.trim()}]`;
+          }
+          if (item.start && item.finish) {
+            rowText += `: ${item.start} - ${item.finish}`;
+          }
+
+          let details = [];
+          if (duration > 0) {
+            const std = Math.min(duration, s.maxStdHours);
+            const ot = Math.max(0, duration - s.maxStdHours);
+            details.push(`${std.toFixed(2)}h Std`);
+            if (ot > 0) details.push(`${ot.toFixed(2)}h OT`);
+          }
+          if (miles > 0) {
+            details.push(`${miles} mi`);
+          }
+          if (details.length > 0) {
+            rowText += ` (${details.join(", ")})`;
+          }
+          lines.push(rowText);
+        }
+      });
+
+      if (daysWorkedCount === 0) {
+        lines.push(`No shifts logged for this week.`);
+      }
+
+      const totalHours = totals.grandStdHrs + totals.grandOtHrs;
+      lines.push(`----------------------------------`);
+      lines.push(`Total Standard Hours: ${totals.grandStdHrs.toFixed(2)}h`);
+      if (totals.grandOtHrs > 0) {
+        lines.push(`Total Overtime Hours: ${totals.grandOtHrs.toFixed(2)}h`);
+      }
+      lines.push(`Total Worked Hours: ${totalHours.toFixed(2)}h`);
+      if (totals.grandMiles > 0) {
+        lines.push(`Total Mileage: ${totals.grandMiles} miles`);
+      }
+
+      // CRITICAL: Strictly NO £ or tax figures sent to the office
+      return lines.join("\n");
+    }
+
+    function openDispatchModal() {
+      const text = buildOfficeReport();
+      document.getElementById("reportOfficeText").value = text;
+      document.getElementById("modalDispatch").classList.add("open");
+    }
+
+    function closeDispatchModal(e) {
+      document.getElementById("modalDispatch").classList.remove("open");
+    }
+
+    function executeDispatch(channel) {
+      const text = document.getElementById("reportOfficeText").value;
+      const s = appData.settings;
+      const phone = (s.officePhone || "").replace(/\s+/g, "");
+      const email = (s.officeEmail || "").trim();
+
+      if (channel === "sms") {
+        const url = phone ? `sms:${phone}?&body=${encodeURIComponent(text)}` : `sms:?&body=${encodeURIComponent(text)}`;
+        window.location.href = url;
+      } else if (channel === "whatsapp") {
+        let waPhone = phone;
+        if (waPhone.startsWith("0")) waPhone = "44" + waPhone.substring(1);
+        const url = waPhone ? `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}` : `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(url, "_blank");
+      } else if (channel === "email") {
+        const [y, m, d] = activeMonday.split("-");
+        const subject = encodeURIComponent(`Weekly Timesheet - Sam (w/c ${d}/${m}/${y})`);
+        const url = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(text)}`;
+        window.location.href = url;
+      } else if (channel === "copy") {
+        const el = document.getElementById("reportOfficeText");
+        el.select();
+        el.setSelectionRange(0, 99999);
+        try {
+          document.execCommand("copy");
+          showToast("Timesheet Copied to Clipboard!");
+        } catch (e) {
+          showToast("Could not copy");
+        }
+      }
+    }
+
+    function renderHistoryView() {
+      const container = document.getElementById("historyListContainer");
+      container.innerHTML = "";
+
+      const keys = Object.keys(appData.weeks).sort().reverse();
+      document.getElementById("historyCountBadge").innerText = `${keys.length} week${keys.length === 1 ? "" : "s"}`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 24px; color: #94a3b8; font-size: 13px;">No timesheets recorded yet.</div>`;
+        return;
+      }
+
+      keys.forEach(mondayIso => {
+        const week = appData.weeks[mondayIso];
+        let totalHrs = 0;
         let totalMiles = 0;
 
-        days.forEach(day => {
-            const siteVal = document.getElementById(`site-${day}`).value;
-            const startVal = document.getElementById(`start-${day}`).value;
-            const endVal = document.getElementById(`end-${day}`).value;
-            const milesVal = parseFloat(document.getElementById(`miles-${day}`).value) || 0;
-            
-            localStorage.setItem(`site-${day}`, siteVal);
-            localStorage.setItem(`start-${day}`, startVal);
-            localStorage.setItem(`end-${day}`, endVal);
-            localStorage.setItem(`miles-${day}`, milesVal);
-
-            totalMiles += milesVal;
-
-            const dailyHours = getDuration(startVal, endVal);
-
-            if(dailyHours > 0) {
-                if(dailyHours <= maxStdHours) {
-                    totalStdHours += dailyHours;
-                } else {
-                    totalStdHours += maxStdHours;
-                    totalOtHours += (dailyHours - maxStdHours);
-                }
-            }
+        DAYS_OF_WEEK.forEach(day => {
+          const item = week.days[day];
+          totalHrs += calculateShiftDuration(item.start, item.finish);
+          totalMiles += (parseFloat(item.miles) || 0);
         });
 
-        const standardPay = hourlyRate * totalStdHours;
-        const otPayTotal = otRate * totalOtHours;
-        const grossPay = standardPay + otPayTotal;
-        const mileagePayTotal = totalMiles * mileageRate;
+        const [y, m, d] = mondayIso.split("-");
+        const isCurrent = mondayIso === activeMonday;
 
-        // --- UK Tax Rules (Weekly Pro-Rata) ---
-        const weeklyTaxThreshold = 12570 / 52; 
-        let incomeTax = 0;
-        if (grossPay > weeklyTaxThreshold) {
-            incomeTax = (grossPay - weeklyTaxThreshold) * 0.20;
+        const itemEl = document.createElement("div");
+        itemEl.className = "history-card-item";
+        if (isCurrent) {
+          itemEl.style.borderColor = "#0284c7";
+          itemEl.style.background = "#f0f9ff";
         }
 
-        const weeklyNIThreshold = 242;
-        let nationalInsurance = 0;
-        if (grossPay > weeklyNIThreshold) {
-            nationalInsurance = (grossPay - weeklyNIThreshold) * 0.08;
-        }
-
-        // Mileage is added net/tax-free
-        const netPay = (grossPay - incomeTax - nationalInsurance) + mileagePayTotal;
-
-        document.getElementById('totalStdHours').innerText = totalStdHours.toFixed(2) + ' hrs';
-        document.getElementById('totalOtHours').innerText = totalOtHours.toFixed(2) + ' hrs';
-        document.getElementById('standardPay').innerText = '£' + standardPay.toFixed(2);
-        document.getElementById('otPayTotal').innerText = '£' + otPayTotal.toFixed(2);
-        document.getElementById('grossPay').innerText = '£' + grossPay.toFixed(2);
-        document.getElementById('incomeTax').innerText = '-£' + incomeTax.toFixed(2);
-        document.getElementById('nationalInsurance').innerText = '-£' + nationalInsurance.toFixed(2);
-        document.getElementById('mileagePayTotal').innerText = '+£' + mileagePayTotal.toFixed(2) + ` (${totalMiles} mi)`;
-        document.getElementById('netPay').innerText = '£' + netPay.toFixed(2);
+        itemEl.innerHTML = `
+          <div>
+            <div class="history-info-title">Week Commencing ${d}/${m}/${y}</div>
+            <div class="history-info-meta">${totalHrs.toFixed(2)}h total${totalMiles > 0 ? ` • ${totalMiles} miles` : ""}</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge ${week.status === 'submitted' ? 'submitted' : 'draft'}">
+              ${week.status === 'submitted' ? 'Submitted' : 'Draft'}
+            </span>
+            <button class="btn-main" style="padding: 6px 12px; font-size: 11px; background: #e2e8f0; color: #334155;" onclick="jumpToArchivedWeek('${mondayIso}')">
+              Open
+            </button>
+          </div>
+        `;
+        container.appendChild(itemEl);
+      });
     }
 
-    function sendReport() {
-        const dateInput = document.getElementById('weekCommencing').value;
-        let headerText = "Weekly Hours Summary";
-        if(dateInput) {
-            const baseDate = new Date(dateInput + 'T00:00:00');
-            headerText += ` (w/c ${baseDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })})`;
-        }
-        let message = `${headerText}:\n\n`;
-        
-        let grandStd = 0;
-        let grandOt = 0;
-        let grandMiles = 0;
-        
-        const rawMaxField = document.getElementById('maxStdHours').value;
-        const maxStdHours = parseFloat(rawMaxField) || 9;
-
-        days.forEach(day => {
-            const site = document.getElementById(`site-${day}`).value.trim();
-            const start = document.getElementById(`start-${day}`).value;
-            const end = document.getElementById(`end-${day}`).value;
-            const miles = parseFloat(document.getElementById(`miles-${day}`).value) || 0;
-            const dateSubtext = document.getElementById(`subtext-${day}`).innerText;
-            
-            if ((start && end && start !== "" && end !== "") || miles > 0) {
-                const totalHours = getDuration(start, end);
-                let std = 0;
-                let ot = 0;
-                
-                if(totalHours <= maxStdHours) {
-                    std = totalHours;
-                } else {
-                    std = maxStdHours;
-                    ot = totalHours - maxStdHours;
-                }
-
-                const dayLabel = dateSubtext ? `${day} (${dateSubtext})` : day;
-                const siteLabel = site ? ` [${site}]` : '';
-
-                if (start && end) {
-                    message += `${dayLabel}${siteLabel}: ${start} to ${end} (Std: ${std.toFixed(2)}h`;
-                    if(ot > 0) message += ` | OT: ${ot.toFixed(2)}h`;
-                    if(miles > 0) message += ` | ${miles}mi`;
-                    message += `)\n`;
-                } else if(miles > 0) {
-                    message += `${dayLabel}${siteLabel}: ${miles} miles\n`;
-                }
-
-                grandStd += std;
-                grandOt += ot;
-                grandMiles += miles;
-            }
-        });
-
-        message += `\nTotal Standard Hours: ${grandStd.toFixed(2)}`;
-        if (grandOt > 0) {
-            message += `\nTotal Overtime Hours: ${grandOt.toFixed(2)}`;
-        }
-        if (grandMiles > 0) {
-            message += `\nTotal Mileage: ${grandMiles} miles (£${document.getElementById('mileagePayTotal').innerText.split(' ')[0].replace('+£', '')})`;
-        }
-        
-        const grossLabel = document.getElementById('grossPay').innerText.replace('£', '');
-        const netLabel = document.getElementById('netPay').innerText;
-        
-        message += `\nEst. Gross Pay: £${grossLabel}`;
-        message += `\nEst. Take-Home (inc. miles): ${netLabel}`;
-
-        window.location.href = "sms:?&body=" + encodeURIComponent(message);
+    function jumpToArchivedWeek(mondayIso) {
+      activeMonday = mondayIso;
+      appData.currentWeekMonday = mondayIso;
+      saveData();
+      switchTab("tabTimesheet");
+      renderDaysView();
     }
 
-    function clearHoursOnly() {
-        days.forEach(day => {
-            localStorage.removeItem(`site-${day}`);
-            localStorage.removeItem(`start-${day}`);
-            localStorage.removeItem(`end-${day}`);
-            localStorage.removeItem(`miles-${day}`);
-            document.getElementById(`site-${day}`).value = '';
-            document.getElementById(`start-${day}`).value = '';
-            document.getElementById(`end-${day}`).value = '';
-            document.getElementById(`miles-${day}`).value = '';
-        });
-        calculatePay();
+    function loadSettingsToForm() {
+      const s = appData.settings;
+      document.getElementById("cfgHourlyRate").value = s.hourlyRate;
+      document.getElementById("cfgOtRate").value = s.otRate;
+      document.getElementById("cfgMaxStdHours").value = s.maxStdHours;
+      document.getElementById("cfgMileageRate").value = s.mileageRate;
+      document.getElementById("cfgOfficePhone").value = s.officePhone || "";
+      document.getElementById("cfgOfficeEmail").value = s.officeEmail || "";
     }
-</script>
 
-</body>
-</html>
+    function saveSettings() {
+      appData.settings.hourlyRate = parseFloat(document.getElementById("cfgHourlyRate").value) || 0;
+      appData.settings.otRate = parseFloat(document.getElementById("cfgOtRate").value) || 0;
+      appData.settings.maxStdHours = parseFloat(document.getElementById("cfgMaxStdHours").value) || 9.0;
+      appData.settings.mileageRate = parseFloat(document.getElementById("cfgMileageRate").value) || 0;
+      appData.settings.officePhone = document.getElementById("cfgOfficePhone").value.trim();
+      appData.settings.officeEmail = document.getElementById("cfgOfficeEmail").value.trim();
+      saveData();
+      recalculatePayFigures();
+      showToast("Settings Updated");
+    }
+
+    function exportBackupData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const a = document.createElement("a");
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `Sams_Timesheet_Backup_${new Date().toISOString().split("T")[0]}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Backup File Downloaded");
+    }
+
+    function importBackupData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.weeks) {
+            appData = parsed;
+            saveData();
+            renderDaysView();
+            renderHistoryView();
+            loadSettingsToForm();
+            showToast("Backup Successfully Restored!");
+          } else {
+            showToast("Invalid file format");
+          }
+        } catch (err) {
+          showToast("Failed to read file");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
+      if (tabId === "tabTimesheet") document.getElementById("navBtnTimesheet").classList.add("active");
+      if (tabId === "tabHistory") {
+        document.getElementById("navBtnHistory").classList.add("active");
+        renderHistoryView();
+      }
+      if (tabId === "tabSettings") {
+        document.getElementById("navBtnSettings").classList.add("active");
+        loadSettingsToForm();
+      }
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById("toastNotice");
