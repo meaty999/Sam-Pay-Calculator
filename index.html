@@ -1297,16 +1297,10 @@
         }
 
         const isLocked = week.submitted;
-        const otCap = parseFloat(appState.settings.otCap) || 9.0;
-        const stdRate = parseFloat(appState.settings.stdRate) || 12.50;
-        const otRate = parseFloat(appState.settings.otRate) || 18.75;
-        const mileageRate = parseFloat(appState.settings.mileageRate) || 0.45;
 
-        let totalStdHours = 0;
-        let totalOtHours = 0;
-        let totalMiles = 0;
-
-        // Render each day row
+        // Populate each day row's fields. This only runs when a week/tab is
+        // loaded - never on every keystroke - so a field the user is actively
+        // typing into is never overwritten mid-entry.
         for (let i = 0; i < 7; i++) {
           const currentDayDate = new Date(baseMonday);
           currentDayDate.setDate(baseMonday.getDate() + i);
@@ -1320,7 +1314,6 @@
           const startInput = document.getElementById(`start_${i}`);
           const endInput = document.getElementById(`end_${i}`);
           const milesInput = document.getElementById(`miles_${i}`);
-          const badgeCalc = document.getElementById(`calcBadge_${i}`);
 
           if (siteInput) {
             siteInput.value = dayData.site || "";
@@ -1338,6 +1331,40 @@
             milesInput.value = (dayData.miles > 0) ? dayData.miles : "";
             milesInput.disabled = isLocked;
           }
+        }
+
+        updateCalculatedDisplays();
+      }
+
+      // Recalculates the daily hour badges and the private pay card from
+      // appState. Deliberately never touches any <input>'s value or disabled
+      // attribute, so it's safe to call after every keystroke without
+      // disturbing whatever the user is mid-way through typing.
+      //
+      // This matters most for the Start/Finish time fields: a browser reports
+      // a <input type="time"> field's value as "" until BOTH the hour and
+      // minute have been entered. The old code re-ran the full render (which
+      // writes dayData.start back into the input) on every single keystroke,
+      // so the moment you finished typing the hour and moved on to the
+      // minute, the field's value read back as "" and got saved and
+      // re-written over the hour you'd just typed - it looked like the hours
+      // simply wouldn't go in.
+      function updateCalculatedDisplays() {
+        const mondayYMD = appState.currentWeekMonday;
+        const week = getOrCreateWeek(mondayYMD);
+
+        const otCap = parseFloat(appState.settings.otCap) || 9.0;
+        const stdRate = parseFloat(appState.settings.stdRate) || 12.50;
+        const otRate = parseFloat(appState.settings.otRate) || 18.75;
+        const mileageRate = parseFloat(appState.settings.mileageRate) || 0.45;
+
+        let totalStdHours = 0;
+        let totalOtHours = 0;
+        let totalMiles = 0;
+
+        for (let i = 0; i < 7; i++) {
+          const dayData = week.days[i] || { site: "", start: "", end: "", miles: 0 };
+          const badgeCalc = document.getElementById(`calcBadge_${i}`);
 
           const dailyDuration = calculateShiftHours(dayData.start, dayData.end);
           let dayStd = 0;
@@ -1502,9 +1529,12 @@
 
         const encoded = encodeURIComponent(text);
 
-        // SMS: Uses standard URI scheme compatible with iOS & Android
+        // SMS: iOS and Android expect a different separator before "body="
+        // (a leading "?" can silently stop the message body from pre-filling
+        // on iPhones), so build the link to match the device it's opened on.
+        const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent || "");
         const btnSms = document.getElementById("btnDispatchSms");
-        if (btnSms) btnSms.href = `sms:?&body=${encoded}`;
+        if (btnSms) btnSms.href = isIOS ? `sms:&body=${encoded}` : `sms:?body=${encoded}`;
 
         // WhatsApp
         const btnWA = document.getElementById("btnDispatchWhatsApp");
@@ -1697,18 +1727,35 @@
           const handleCellUpdate = () => {
             const week = getOrCreateWeek(appState.currentWeekMonday);
             if (!week.days[i]) week.days[i] = {};
+            // A time input's .value only becomes a real "HH:MM" string once
+            // BOTH the hour and minute are filled in - it reads back as ""
+            // while only partly typed. Guard against saving that blank state
+            // over a value that was already there (e.g. the user is editing
+            // the minute and the field is briefly incomplete).
             if (siteIn) week.days[i].site = siteIn.value;
-            if (startIn) week.days[i].start = startIn.value;
-            if (endIn) week.days[i].end = endIn.value;
+            if (startIn && (startIn.value || document.activeElement !== startIn)) {
+              week.days[i].start = startIn.value;
+            }
+            if (endIn && (endIn.value || document.activeElement !== endIn)) {
+              week.days[i].end = endIn.value;
+            }
             if (milesIn) week.days[i].miles = parseFloat(milesIn.value) || 0;
 
             saveData();
-            renderTimesheet();
+            // Only recompute the badges/pay figures here - never re-write the
+            // input fields themselves (see updateCalculatedDisplays' comment).
+            updateCalculatedDisplays();
           };
 
           if (siteIn) siteIn.addEventListener("input", handleCellUpdate);
-          if (startIn) startIn.addEventListener("input", handleCellUpdate);
-          if (endIn) endIn.addEventListener("input", handleCellUpdate);
+          if (startIn) {
+            startIn.addEventListener("input", handleCellUpdate);
+            startIn.addEventListener("change", handleCellUpdate);
+          }
+          if (endIn) {
+            endIn.addEventListener("input", handleCellUpdate);
+            endIn.addEventListener("change", handleCellUpdate);
+          }
           if (milesIn) milesIn.addEventListener("input", handleCellUpdate);
         }
 
